@@ -7,7 +7,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 min-h-screen flex flex-col justify-between select-none" oncontextmenu="return false;">
 
     <!-- Header -->
     <header class="bg-slate-900 text-white shadow-md py-4 px-6">
@@ -104,7 +104,7 @@
         &copy; 2026 Security Services Inc. All rights reserved.
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript Logic & Security Restrictions -->
     <script>
         let currentEmpId = "";
 
@@ -113,6 +113,37 @@
             "EMP/PUN02589": "password123",
             "EMP/PUN01122": "guardSecure2026"
         };
+
+        // --- SECURITY: Disable Right-Click, DevTools Shortcuts, Copy, Paste, & Cut ---
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            // Block F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
+                e.preventDefault();
+                return false;
+            }
+            // Block Ctrl+U (View Source), Ctrl+S (Save), Ctrl+A (Select All)
+            if (e.ctrlKey && ['u', 'U', 's', 'S', 'a', 'A'].includes(e.key)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Block Copy, Cut, Paste
+        ['copy', 'cut', 'paste'].forEach(function(event) {
+            document.addEventListener(event, function(e) {
+                e.preventDefault();
+            });
+        });
+        // --------------------------------------------------------------------------
 
         function handleLogin(event) {
             event.preventDefault();
@@ -175,7 +206,6 @@
             link.download = `${cleanId}_${year}_${month}.pdf`;
             document.body.appendChild(link);
             
-            // Check if file exists or trigger download
             link.click();
             document.body.removeChild(link);
         }
