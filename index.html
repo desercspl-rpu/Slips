@@ -13,7 +13,7 @@
     <header class="bg-slate-900 text-white shadow-md py-4 px-6">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold tracking-wide">🛡️ SecureGuard Payslip System</h1>
-            <span id="userBadge" class="hidden text-sm bg-slate-800 px-3 py-1 rounded-full text-slate-300"></span>
+            <span id="userBadge" class="hidden text-sm bg-slate-800 px-3 py-1 rounded-full text-slate-300 font-medium"></span>
         </div>
     </header>
 
@@ -50,7 +50,10 @@
         <!-- DASHBOARD CARD (Hidden by default) -->
         <div id="dashboardCard" class="hidden bg-white rounded-xl shadow-lg p-8 border border-slate-200">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-slate-800">Download Payslip</h2>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800">Download Payslip</h2>
+                    <p id="welcomeText" class="text-xs text-slate-500 mt-0.5"></p>
+                </div>
                 <button onclick="handleLogout()" class="text-sm text-red-600 hover:underline font-medium">Logout</button>
             </div>
 
@@ -107,11 +110,12 @@
     <!-- JavaScript Logic & Security Restrictions -->
     <script>
         let currentEmpId = "";
+        let currentEmpName = "";
 
-        // Mock Database of authorized users
+        // Mock Database with Name and Password
         const authorizedUsers = {
-            "EMP/PUN02589": "password123",
-            "EMP/PUN01122": "guardSecure2026"
+            "EMP/PUN02589": { password: "password123", name: "Rahul Sharma" },
+            "EMP/PUN01122": { password: "guardSecure2026", name: "Amit Kumar" }
         };
 
         // --- SECURITY: Disable Right-Click, DevTools Shortcuts, Copy, Paste, & Cut ---
@@ -120,24 +124,20 @@
         });
 
         document.addEventListener('keydown', function (e) {
-            // Block F12
             if (e.key === 'F12') {
                 e.preventDefault();
                 return false;
             }
-            // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
             if (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
                 e.preventDefault();
                 return false;
             }
-            // Block Ctrl+U (View Source), Ctrl+S (Save), Ctrl+A (Select All)
             if (e.ctrlKey && ['u', 'U', 's', 'S', 'a', 'A'].includes(e.key)) {
                 e.preventDefault();
                 return false;
             }
         });
 
-        // Block Copy, Cut, Paste
         ['copy', 'cut', 'paste'].forEach(function(event) {
             document.addEventListener(event, function(e) {
                 e.preventDefault();
@@ -151,18 +151,23 @@
             const inputPass = document.getElementById('password').value;
             const errorDiv = document.getElementById('loginError');
 
-            if (authorizedUsers[inputId] && authorizedUsers[inputId] === inputPass) {
+            const user = authorizedUsers[inputId];
+
+            if (user && user.password === inputPass) {
                 currentEmpId = inputId;
+                currentEmpName = user.name;
                 errorDiv.classList.add('hidden');
                 
                 // Toggle UI views
                 document.getElementById('loginCard').classList.add('hidden');
                 document.getElementById('dashboardCard').classList.remove('hidden');
                 
-                // Update badge
+                // Update badge and welcome text with Employee Name
                 const badge = document.getElementById('userBadge');
-                badge.innerText = `ID: ${currentEmpId}`;
+                badge.innerText = `👤 ${currentEmpName} (${currentEmpId})`;
                 badge.classList.remove('hidden');
+
+                document.getElementById('welcomeText').innerText = `Welcome back, ${currentEmpName}!`;
 
                 updatePathPreview();
             } else {
@@ -172,6 +177,7 @@
 
         function handleLogout() {
             currentEmpId = "";
+            currentEmpName = "";
             document.getElementById('loginForm').reset();
             document.getElementById('dashboardCard').classList.add('hidden');
             document.getElementById('loginCard').classList.remove('hidden');
@@ -187,7 +193,6 @@
             const year = document.getElementById('selectYear').value;
             const month = document.getElementById('selectMonth').value;
             
-            // Transform "EMP/PUN02589" -> "EMPPUN02589"
             const cleanId = currentEmpId.replace(/\//g, '');
             const filePath = `PaySlips/${year}/${month}/${cleanId}.pdf`;
             
@@ -200,7 +205,6 @@
             const cleanId = currentEmpId.replace(/\//g, '');
             const filePath = `PaySlips/${year}/${month}/${cleanId}.pdf`;
 
-            // Create temporary link to trigger download
             const link = document.createElement('a');
             link.href = filePath;
             link.download = `${cleanId}_${year}_${month}.pdf`;
