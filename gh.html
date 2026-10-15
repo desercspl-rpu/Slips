@@ -265,7 +265,6 @@
                     ];
                     
                     document.write(opsMembers.map(member => {
-                        // Extract initials strictly from actual name parts (ignoring salutations like "Mr:" or "Mrs:")
                         const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
                         const initials = cleanParts.length >= 2 
                             ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
@@ -305,7 +304,6 @@
                     ];
                     
                     document.write(officeMembers.map(member => {
-                        // Extract initials strictly from actual name parts (ignoring salutations like "Mr:" or "Mrs:")
                         const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
                         const initials = cleanParts.length >= 2 
                             ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
@@ -462,7 +460,7 @@
             }
         }
 
-        // Form Submit Handler integrated with Power Automate using no-cors mode to bypass browser blocks
+        // Form Submit Handler integrated with Power Automate (Fixed)
         async function handleFormSubmit(e) {
             e.preventDefault();
             
@@ -478,9 +476,8 @@
             const powerAutomateUrl = "YOUR_POWER_AUTOMATE_HTTP_TRIGGER_URL_HERE";
 
             try {
-                await fetch(powerAutomateUrl, {
+                const response = await fetch(powerAutomateUrl, {
                     method: 'POST',
-                    mode: 'no-cors', // Bypasses browser CORS blocking restrictions
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -492,13 +489,17 @@
                     })
                 });
 
-                // Assuming success with opaque 'no-cors' response
+                if (!response.ok) {
+                    throw new Error(`Server responded with status ${response.status}`);
+                }
+
                 alert("Report successfully sent to control room. Your officer will review shortly.");
                 toggleModal('ticketModal');
                 e.target.reset();
                 
             } catch (err) {
-                errorEl.innerText = "Error: Report submission failed. Please check network and try again.";
+                console.error(err);
+                errorEl.innerText = "Error: Report submission failed. Please check network and Power Automate URL.";
                 errorEl.classList.remove('hidden');
             }
         }
