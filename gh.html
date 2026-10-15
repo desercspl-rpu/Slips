@@ -473,7 +473,7 @@
             const remark = document.getElementById('ticketRemark').value;
 
             // TODO: Replace with your actual Power Automate HTTP POST URL
-            const powerAutomateUrl = "https://default7055ba6336ec48e083eb932bb1602d.a1.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/28/workflows/20ab591d138948adb435ddb768fd6bad/triggers/manual/paths/invoke?api-version=1";
+            const powerAutomateUrl = "https://default7055ba6336ec48e083eb932bb1602d.a1.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/28/workflows/20ab591d138948adb435ddb768fd6bad/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=A_lGxRU47nHr3DbFWYyKezULhcWahe-3yBYiamskbIs";
 
             if (powerAutomateUrl.includes("YOUR_POWER_AUTOMATE_HTTP_TRIGGER_URL_HERE")) {
                 errorEl.innerText = "Error: Please update the Power Automate URL in the script.";
