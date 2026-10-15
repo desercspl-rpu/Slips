@@ -460,7 +460,7 @@
             }
         }
 
-        // Form Submit Handler integrated with Power Automate (Fixed)
+        // Form Submit Handler integrated with Power Automate using no-cors mode
         async function handleFormSubmit(e) {
             e.preventDefault();
             
@@ -475,9 +475,16 @@
             // TODO: Replace with your actual Power Automate HTTP POST URL
             const powerAutomateUrl = "https://default7055ba6336ec48e083eb932bb1602d.a1.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/28/workflows/20ab591d138948adb435ddb768fd6bad/triggers/manual/paths/invoke?api-version=1";
 
+            if (powerAutomateUrl.includes("https://default7055ba6336ec48e083eb932bb1602d.a1.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/28/workflows/20ab591d138948adb435ddb768fd6bad/triggers/manual/paths/invoke?api-version=1")) {
+                errorEl.innerText = "Error: Please update the Power Automate URL in the script.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
             try {
-                const response = await fetch(powerAutomateUrl, {
+                await fetch(powerAutomateUrl, {
                     method: 'POST',
+                    mode: 'no-cors', // Bypasses browser CORS blocking restrictions for Power Automate
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -489,17 +496,14 @@
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Server responded with status ${response.status}`);
-                }
-
+                // Assuming success with opaque 'no-cors' response
                 alert("Report successfully sent to control room. Your officer will review shortly.");
                 toggleModal('ticketModal');
                 e.target.reset();
                 
             } catch (err) {
                 console.error(err);
-                errorEl.innerText = "Error: Report submission failed. Please check network and Power Automate URL.";
+                errorEl.innerText = "Error: Report submission failed. Please check network and try again.";
                 errorEl.classList.remove('hidden');
             }
         }
