@@ -99,7 +99,7 @@
                     <div id="headerSearchBox" class="hidden absolute right-0 z-50 bg-white shadow-xl border border-slate-200 rounded-xl p-2 w-72 sm:w-80">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Search supervison, location..." 
+                            <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Search supervision, location..." 
                                    class="w-full pl-9 pr-8 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs font-medium">
                             <button onclick="closeHeaderSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 text-xs">
                                 <i class="fa-solid fa-xmark"></i>
@@ -137,7 +137,7 @@
                             Branch Office - Goa
                             <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-emerald-600 transition"></i>
                         </h4>
-                        <p class="text-xs text-slate-500 mb-4">Office No: 205, 2nd Floor, Rizvi Tower, St. Lenz, Panjim, North Goa, Goa - 403001.
+                        <p class="text-xs text-slate-500 mb-4">Office No: 205, 2nd Floor, Rizvi Tower, St. Lenz, Panjim, North Goa, Goa - 403001.</p>
                     </div>
                     <span class="inline-flex items-center text-xs font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
                         Direction <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
@@ -163,7 +163,7 @@
                     </span>
                 </a>
 
-				<!-- WhatsApp Card -->
+                <!-- WhatsApp Card -->
                 <a href="https://wa.me/9327945501" target="_blank" rel="noopener noreferrer" 
                    onclick="checkLink(event, this.href)"
                    class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
@@ -464,7 +464,8 @@
                     })
                 });
 
-                alert("Report successfully sent to control room. Your officer will review shortly.");
+                // Simplified alert without page info/link
+                alert("Report successfully sent to control room.");
                 toggleModal('ticketModal');
                 e.target.reset();
                 
