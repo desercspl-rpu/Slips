@@ -1,498 +1,228 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkmate</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Payslip GitHub Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts Inter & FontAwesome Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            800: '#065f46',
-                            900: '#064e3b',
-                        },
-                        accent: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-        .hover-lift {
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08);
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between pb-16 md:pb-0 selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
 
-    <!-- Top Header -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
-                    <i class="fa-solid fa-shield-halved text-xl"></i>
+    <div class="max-w-xl w-full bg-white shadow-xl rounded-2xl p-8 border border-slate-200">
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="bg-blue-600 p-3 rounded-xl text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Payslip Archive Manager</h1>
+                <p class="text-sm text-slate-500">Manage CSPL & CFESPL directories & shift files</p>
+            </div>
+        </div>
+
+        <form id="payslipForm" class="space-y-5">
+            <!-- GitHub Config -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">GitHub Owner / User</label>
+                    <input type="text" id="ghOwner" placeholder="username" required class="w-full text-sm px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-none">Checkmate</h1>
-                    <p class="text-xs font-medium text-emerald-600">Contact Us</p>
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Repository Name</label>
+                    <input type="text" id="ghRepo" placeholder="repo-name" required class="w-full text-sm px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">GitHub Personal Access Token (PAT)</label>
+                    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" required class="w-full text-sm px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">Requires `repo` scope permissions.</p>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-3">
-                <div id="headerSearchWrapper" class="relative flex items-center">
-                    <button onclick="toggleHeaderSearch(event)" id="searchToggleBtn" title="Search Posts" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-xs">
-                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                    </button>
-                    <div id="headerSearchBox" class="hidden absolute right-0 z-50 bg-white shadow-xl border border-slate-200 rounded-xl p-2 w-72 sm:w-80">
-                        <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Search supervison, location..." 
-                                   class="w-full pl-9 pr-8 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs font-medium">
-                            <button onclick="closeHeaderSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 text-xs">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="toggleModal('ticketModal')" class="hidden sm:flex bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm hover:shadow items-center">
-                    <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Drop your query
-                </button>
+            <!-- Company Selection -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-1">1. Select Company</label>
+                <select id="company" class="w-full px-4 py-2.5 border rounded-xl bg-white focus:ring-2 focus:ring-blue-500 outline-none font-medium text-slate-700">
+                    <option value="CSPL">CSPL</option>
+                    <option value="CFESPL">CFESPL</option>
+                </select>
             </div>
-        </div>
-    </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
-        
-        <div class="mb-4">
-            <p id="pageErrorMsg" class="text-xs text-red-500 font-medium hidden"></p>
-        </div>
-
-        <div class="mb-10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="cardsGrid">
-                
-                <!-- Location Card Goa -->
-                <a href="https://www.google.com/maps/place/15%C2%B029'45.5%22N+73%C2%B049'17.4%22E/@15.4959774,73.8189251,17z/data=!3m1!4b1!4m4!3m3!8m2!3d15.4959722!4d73.8215?hl=en&entry=ttu" target="_blank" rel="noopener noreferrer" 
-                   onclick="checkLink(event, this.href)"
-                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 text-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
-                            <i class="fa-solid fa-location-dot"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
-                            Office Location
-                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-emerald-600 transition"></i>
-                        </h4>
-                        <p class="text-xs text-slate-500 mb-4">Get map directions to Branch Office Goa.</p>
-                    </div>
-                    <span class="inline-flex items-center text-xs font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
-                        Direction <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
-                    </span>
-                </a>
-
-                <!-- Location Card Pune -->
-                <a href="https://maps.app.goo.gl/D6Z3B6XY7pduSbyS8" target="_blank" rel="noopener noreferrer" 
-                   onclick="checkLink(event, this.href)"
-                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 text-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
-                            <i class="fa-solid fa-location-dot"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
-                            Office Location
-                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-emerald-600 transition"></i>
-                        </h4>
-                        <p class="text-xs text-slate-500 mb-4">Get map directions to Branch Office Pune.</p>
-                    </div>
-                    <span class="inline-flex items-center text-xs font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
-                        Direction <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
-                    </span>
-                </a>
-
-				<!-- WhatsApp Card -->
-                <a href="https://wa.me/9327945501" target="_blank" rel="noopener noreferrer" 
-                   onclick="checkLink(event, this.href)"
-                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center mb-4 text-xl group-hover:bg-green-600 group-hover:text-white transition-colors duration-200">
-                            <i class="fa-brands fa-whatsapp"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
-                            WhatsApp
-                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                        </h4>
-                        <p class="text-xs text-slate-500 mb-2">Share updates, photos, query or documents if needed.</p>
-                        <p class="text-sm font-mono font-semibold text-slate-800">+91 9327945501</p>
-                    </div>
-                    <span class="inline-flex items-center text-xs font-semibold text-green-600 group-hover:translate-x-1 transition-transform mt-4">
-                        Send Message <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
-                    </span>
-                </a>
-
-                <!-- Email Card -->
-                <a href="mailto:pune.recruitment@checkmateservices.com" 
-                   onclick="checkLink(event, this.href)"
-                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200">
-                            <i class="fa-solid fa-envelope"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
-                            Email
-                            <i class="fa-solid fa-paper-plane text-xs text-slate-400 group-hover:text-blue-600 transition"></i>
-                        </h4>
-                        <p class="text-xs text-slate-500 mb-2">Send your query, incident report or others.</p>
-                        <p class="text-xs font-mono font-semibold text-slate-800 truncate">pune.recruitment@checkmateservices.com</p>
-                    </div>
-                    <span class="inline-flex items-center text-xs font-semibold text-blue-600 group-hover:translate-x-1 transition-transform mt-4">
-                        Send Report <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
-                    </span>
-                </a>
-
+            <!-- Action Selection -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-1">2. Select Action</label>
+                <select id="actionType" class="w-full px-4 py-2.5 border rounded-xl bg-white focus:ring-2 focus:ring-blue-500 outline-none font-medium text-slate-700">
+                    <option value="shift_and_upload">Shift Folders (Last ➔ LastSec ➔ LastThi) & Upload New</option>
+                    <option value="only_shift">Only Shift Folders (No New Upload)</option>
+                </select>
             </div>
-        </div>
 
-        <!-- Key Operational Contacts Section -->
-        <section class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-8">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-3">
-                <div>
-                    <h3 class="text-xl font-bold text-slate-900">Operations & Office</h3>
-                    <p class="text-xs text-slate-500">Contact your duty officers, Area officers, Assignment Managers, and office team.</p>
-                </div>
-                <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
-                    <button onclick="switchTab('operations')" id="tab-operations" class="tab-btn px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition bg-brand-600 text-white shadow-sm">
-                        Ops Team
-                    </button>
-                    <button onclick="switchTab('office')" id="tab-office" class="tab-btn px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition text-slate-600 hover:bg-slate-200">
-                        Office Team
-                    </button>
+            <!-- File Upload Section -->
+            <div id="fileUploadSection">
+                <label class="block text-sm font-bold text-slate-700 mb-1">3. Upload PDF File(s) for 'Last'</label>
+                <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer relative">
+                    <input type="file" id="pdfFiles" accept="application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p class="text-sm font-medium text-slate-700">Drag & drop PDFs here, or <span class="text-blue-600 underline">browse</span></p>
+                    <p id="fileCount" class="text-xs text-slate-400 mt-1">No files selected</p>
                 </div>
             </div>
 
-            <!-- Operations Team Grid -->
-            <div id="content-operations" class="tab-content grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <script>
-                    const opsMembers = [
-                        { name: "Mr: Atul Thombare", role: "Area Officers - Nashik", phone: "+919327945501" },
-                        { name: "Mr: Babaram Surve", role: "Area Officers - Pune", phone: "+919327945501" },
-                        { name: "Mr: Balaji Ghodake", role: "AM - Infosys Pune", phone: "+919327945501" },
-                        { name: "Mr: Kaushik Achary", role: "AM - KPIT Pune", phone: "+919327945501" },
-                        { name: "Mr: Manoj Palande", role: "Area Officers - Pune", phone: "+919327945501" },
-                        { name: "Mr: Ramchandra Painkara", role: "Area Officers - GOA", phone: "+919327945501" },
-                        { name: "Mr: Shivling Khabile", role: "Area Officers - Sangli", phone: "+919327945501" },
-                        { name: "Mr: Suresh Math", role: "Area Officers - Solapur", phone: "+919327945501" }
-                    ];
-                    
-                    document.write(opsMembers.map(member => {
-                        const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
-                        const initials = cleanParts.length >= 2 
-                            ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
-                            : cleanParts[0].substring(0, 2).toUpperCase();
-
-                        return `
-                        <div class="searchable-item p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 transition-all flex items-center justify-between group">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center">
-                                    ${initials}
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-900">${member.name}</p>
-                                    <p class="text-[11px] text-slate-500">${member.role}</p>
-                                </div>
-                            </div>
-                            <a href="tel:${member.phone}" onclick="checkLink(event, this.href)" title="Contact ${member.name}" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-emerald-600 hover:border-emerald-300 flex items-center justify-center text-xs transition shadow-xs">
-                                <i class="fa-solid fa-phone"></i>
-                            </a>
-                        </div>
-                    `;
-                    }).join(''));
-                </script>
-            </div>
-
-            <!-- Office Team Grid -->
-            <div id="content-office" class="tab-content hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <script>
-                    const officeMembers = [
-                        { name: "Mr: Sagar Navale", role: "Operations", phone: "+919327945501" },
-                        { name: "Mr: Bhalchandra Choudhari", role: "Gratuty, Clearance & Attendance", phone: "+919327945501" },
-                        { name: "Accounts", role: "Accounts", phone: "+919327945501" },
-                        { name: "Mr: Ketan Jadhav", role: "HR Head - Pune", phone: "+919327945501" },
-                        { name: "Mr: Sarvesh Sharma", role: "IT Head - Pune", phone: "+919327945501" },
-                        { name: "Mr: Vinod Reddy", role: "Compliance", phone: "+919327945501" },
-                        { name: "Mrs: Yadnya Shinde", role: "Fleet Incharge", phone: "+919327945501" }
-                    ];
-                    
-                    document.write(officeMembers.map(member => {
-                        const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
-                        const initials = cleanParts.length >= 2 
-                            ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
-                            : cleanParts[0].substring(0, 2).toUpperCase();
-
-                        return `
-                        <div class="searchable-item p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 transition-all flex items-center justify-between group">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center">
-                                    ${initials}
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-900">${member.name}</p>
-                                    <p class="text-[11px] text-slate-500">${member.role}</p>
-                                </div>
-                            </div>
-                            <a href="tel:${member.phone}" onclick="checkLink(event, this.href)" title="Contact ${member.name}" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-300 flex items-center justify-center text-xs transition shadow-xs">
-                                <i class="fa-solid fa-phone"></i>
-                            </a>
-                        </div>
-                    `;
-                    }).join(''));
-                </script>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Modal Dialog -->
-    <div id="ticketModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200">
-            <button onclick="toggleModal('ticketModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg p-1">
-                <i class="fa-solid fa-xmark"></i>
+            <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-200">
+                Execute Process on GitHub
             </button>
-            <div class="mb-5">
-                <h3 class="text-lg font-bold text-slate-900">Rise a ticket</h3>
-                <p class="text-xs text-slate-500">Drop your query here.</p>
-            </div>
-            <form onsubmit="handleFormSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Your Employee ID:</label>
-                    <input type="text" id="ticketEmpId" required placeholder="e.g. EMP/PUN01234" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Company Name:</label>
-                    <input type="text" id="ticketCompany" required placeholder="e.g. Tech Park" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subject:</label>
-                    <input type="text" id="ticketSubject" required placeholder="e.g. Attendance Issue" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address:</label>
-                    <input type="email" id="ticketEmail" required placeholder="e.g. name@example.com" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Remark:</label>
-                    <textarea id="ticketRemark" rows="3" required placeholder="Describe your issue..." class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
-                </div>
-                <p id="formErrorMsg" class="text-xs text-red-500 font-medium hidden"></p>
-                <div class="pt-2 flex justify-end gap-2">
-                    <button type="button" onclick="toggleModal('ticketModal')" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition">Cancel</button>
-                    <button type="submit" id="submitBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
+        </form>
 
-    <!-- Mobile Floating Navigation Bar -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-6 py-2 flex justify-around items-center">
-        <a href="index.html" onclick="checkLink(event, this.href)" class="flex flex-col items-center text-brand-600">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5">Home</span>
-        </a>
-        <a href="https://wa.me/9327945501" target="_blank" onclick="checkLink(event, this.href)" class="flex flex-col items-center text-slate-500 hover:text-green-600">
-            <i class="fa-brands fa-whatsapp text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5">WhatsApp</span>
-        </a>
-        <a href="tel:9327945501" onclick="checkLink(event, this.href)" class="flex flex-col items-center text-slate-500 hover:text-purple-600">
-            <i class="fa-solid fa-phone text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5">Emergency</span>
-        </a>
-        <button onclick="toggleModal('ticketModal')" class="flex flex-col items-center text-slate-500 hover:text-emerald-600">
-            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5">Ticket</span>
-        </button>
+        <!-- Status Box -->
+        <div id="statusBox" class="hidden mt-6 p-4 rounded-xl text-sm font-medium"></div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-500 text-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-center">
-            <p>&copy; <span id="currentYear"></span> Checkmate Services Private Limited</p>
-        </div>
-    </footer>
 
     <script>
-        document.getElementById("currentYear").textContent = new Date().getFullYear();
+        const fileInput = document.getElementById('pdfFiles');
+        const fileCount = document.getElementById('fileCount');
+        const actionType = document.getElementById('actionType');
+        const fileUploadSection = document.getElementById('fileUploadSection');
 
-        function toggleHeaderSearch(e) {
-            e.stopPropagation();
-            const searchBox = document.getElementById('headerSearchBox');
-            const searchInput = document.getElementById('searchInput');
-            if (searchBox.classList.contains('hidden')) {
-                searchBox.classList.remove('hidden');
-                searchInput.focus();
+        fileInput.addEventListener('change', () => {
+            fileCount.innerText = fileInput.files.length > 0 ? `${fileInput.files.length} file(s) chosen` : "No files selected";
+        });
+
+        actionType.addEventListener('change', () => {
+            if (actionType.value === 'only_shift') {
+                fileUploadSection.style.display = 'none';
             } else {
-                searchBox.classList.add('hidden');
-            }
-        }
-
-        function closeHeaderSearch() {
-            document.getElementById('headerSearchBox').classList.add('hidden');
-        }
-
-        document.addEventListener('click', function(event) {
-            const wrapper = document.getElementById('headerSearchWrapper');
-            const searchBox = document.getElementById('headerSearchBox');
-            if (wrapper && !wrapper.contains(event.target)) {
-                searchBox.classList.add('hidden');
+                fileUploadSection.style.display = 'block';
             }
         });
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
-                btn.classList.add('text-slate-600', 'hover:bg-slate-200');
-            });
-            document.getElementById(`content-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-200');
-            activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
-        }
-
-        function filterCards() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const items = document.querySelectorAll('.searchable-item');
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                if (text.includes(query)) {
-                    item.style.display = "";
-                } else {
-                    item.style.display = "none";
-                }
-            });
-        }
-
-        function toggleModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.toggle('hidden');
-            }
-        }
-
-        async function handleFormSubmit(e) {
+        document.getElementById('payslipForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const errorEl = document.getElementById('formErrorMsg');
-            errorEl.classList.add('hidden');
-            
-            // Capture all form values including Subject and Email
-            const employeeId = document.getElementById('ticketEmpId').value;
-            const company = document.getElementById('ticketCompany').value;
-            const subject = document.getElementById('ticketSubject').value;
-            const email = document.getElementById('ticketEmail').value;
-            const remark = document.getElementById('ticketRemark').value;
+            const owner = document.getElementById('ghOwner').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            const token = document.getElementById('ghToken').value.trim();
+            const company = document.getElementById('company').value;
+            const action = document.getElementById('actionType').value;
+            const statusBox = document.getElementById('statusBox');
+            const submitBtn = document.getElementById('submitBtn');
 
-            // Your Power Automate URL
-            const powerAutomateUrl = "https://default7055ba6336ec48e083eb932bb1602d.a1.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/28/workflows/20ab591d138948adb435ddb768fd6bad/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=A_lGxRU47nHr3DbFWYyKezULhcWahe-3yBYiamskbIs";
+            statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200 block";
+            statusBox.innerText = "Connecting to GitHub & fetching repository contents...";
+            submitBtn.disabled = true;
+
+            const headers = {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28"
+            };
+
+            const basePath = `PaySlips/${company}`;
 
             try {
-                await fetch(powerAutomateUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        employeeId: employeeId,
-                        company: company,
-                        subject: subject,
-                        email: email,
-                        remark: remark,
-                        submittedAt: new Date().toISOString()
-                    })
-                });
-
-                alert("Report successfully sent to control room. Your officer will review shortly.");
-                toggleModal('ticketModal');
-                e.target.reset();
-                
-            } catch (err) {
-                console.error(err);
-                errorEl.innerText = "Error: Report submission failed. Please check network and try again.";
-                errorEl.classList.remove('hidden');
-            }
-        }
-
-        function checkLink(event, url) {
-            if (url.includes('index.html') && window.location.protocol === 'file:') {
-                try {
-                    return true;
-                } catch (err) {
-                    event.preventDefault();
-                    showPageError("Error: Page or link not available.");
+                // Helper to fetch directory contents
+                async function getDirFiles(folderName) {
+                    try {
+                        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${basePath}/${folderName}`, { headers });
+                        if (res.status === 404) return [];
+                        if (!res.ok) throw new Error(`Failed to read folder ${folderName}`);
+                        return await res.json();
+                    } catch (e) {
+                        return [];
+                    }
                 }
-            }
-        }
 
-        function showPageError(message) {
-            const errBox = document.getElementById('pageErrorMsg');
-            if (errBox) {
-                errBox.innerText = message;
-                errBox.classList.remove('hidden');
+                // Helper to delete a file from GitHub repo
+                async function deleteFile(path, sha) {
+                    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                        method: 'DELETE',
+                        headers: { ...headers, "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: `Archive shift: removing old ${path}`, sha })
+                    });
+                }
+
+                // Helper to upload/create a file on GitHub
+                async function uploadFile(path, contentBase64, message) {
+                    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                        method: 'PUT',
+                        headers: { ...headers, "Content-Type": "application/json" },
+                        body: JSON.stringify({ message, content: contentBase64 })
+                    });
+                }
+
+                statusBox.innerText = "Step 1/3: Reading existing directory structure...";
+                const lastFiles = await getDirFiles('Last');
+                const lastSecFiles = await getDirFiles('LastSec');
+                const lastThiFiles = await getDirFiles('LastThi');
+
+                statusBox.innerText = "Step 2/3: Shifting archives (LastSec ➔ LastThi, Last ➔ LastSec)...";
+
+                // 1. Clear current LastThi contents
+                for (let file of lastThiFiles) {
+                    if (file.type === 'file') {
+                        await deleteFile(file.path, file.sha);
+                    }
+                }
+
+                // 2. Move LastSec files to LastThi
+                for (let file of lastSecFiles) {
+                    if (file.type === 'file') {
+                        // Fetch raw content of LastSec file
+                        const fileRes = await fetch(file.download_url);
+                        const blob = await fileRes.blob();
+                        const base64 = await toBase64(blob);
+
+                        await uploadFile(`${basePath}/LastThi/${file.name}`, base64.split(',')[1], `Shift LastSec to LastThi: ${file.name}`);
+                        await deleteFile(file.path, file.sha); // delete original from LastSec
+                    }
+                }
+
+                // 3. Move Last files to LastSec
+                for (let file of lastFiles) {
+                    if (file.type === 'file') {
+                        const fileRes = await fetch(file.download_url);
+                        const blob = await fileRes.blob();
+                        const base64 = await toBase64(blob);
+
+                        await uploadFile(`${basePath}/LastSec/${file.name}`, base64.split(',')[1], `Shift Last to LastSec: ${file.name}`);
+                        
+                        if (action === 'shift_and_upload') {
+                            // If we are uploading new files, we also clear out the old Last file 
+                            // (since new files will take its place)
+                            await deleteFile(file.path, file.sha);
+                        }
+                    }
+                }
+
+                // 4. Upload New Files if requested
+                if (action === 'shift_and_upload') {
+                    statusBox.innerText = "Step 3/3: Uploading new files to 'Last'...";
+                    if (fileInput.files.length === 0) {
+                        throw new Error("No PDF files were selected to upload into 'Last'!");
+                    }
+
+                    for (let file of fileInput.files) {
+                        const base64Data = await toBase64(file);
+                        await uploadFile(`${basePath}/Last/${file.name}`, base64Data.split(',')[1], `Add new payslip to Last: ${file.name}`);
+                    }
+                }
+
+                statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 block";
+                statusBox.innerText = "Success! Directory folders shifted and files updated successfully on GitHub.";
+            } catch (err) {
+                statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-rose-50 text-rose-700 border border-rose-200 block";
+                statusBox.innerText = "Error: " + err.message;
+            } finally {
+                submitBtn.disabled = false;
             }
-        }
+        });
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
     </script>
 </body>
 </html>
