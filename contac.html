@@ -60,7 +60,6 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08);
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -82,7 +81,6 @@
     <!-- Top Header -->
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- Brand Logo -->
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
                     <i class="fa-solid fa-shield-halved text-xl"></i>
@@ -93,14 +91,11 @@
                 </div>
             </div>
 
-            <!-- Header Search Bar / Logo Toggle & Action Button -->
             <div class="flex items-center space-x-3">
-                <!-- Collapsible Header Search Container -->
                 <div id="headerSearchWrapper" class="relative flex items-center">
                     <button onclick="toggleHeaderSearch(event)" id="searchToggleBtn" title="Search Posts" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-xs">
                         <i class="fa-solid fa-magnifying-glass text-sm"></i>
                     </button>
-                    <!-- Expandable Input Field (Initially Hidden) -->
                     <div id="headerSearchBox" class="hidden absolute right-0 z-50 bg-white shadow-xl border border-slate-200 rounded-xl p-2 w-72 sm:w-80">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -123,17 +118,15 @@
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
         
-        <!-- Error message container -->
         <div class="mb-4">
             <p id="pageErrorMsg" class="text-xs text-red-500 font-medium hidden"></p>
         </div>
 
-        <!-- Primary Action Cards Grid -->
         <div class="mb-10">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="cardsGrid">
                 
-                <!-- Location Card -->
-                <a href="https://www.google.com/maps/place/15%C2%B029'45.5%22N+73%C2%B049'17.4%22E/@15.4959774,73.8189251,17z/data=!3m1!4b1!4m4!3m3!8m2!3d15.4959722!4d73.8215?hl=en&entry=ttu&g_ep=EgoyMDI2MTAxMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" 
+                <!-- Location Card Goa -->
+                <a href="https://www.google.com/maps/place/15%C2%B029'45.5%22N+73%C2%B049'17.4%22E/@15.4959774,73.8189251,17z/data=!3m1!4b1!4m4!3m3!8m2!3d15.4959722!4d73.8215?hl=en&entry=ttu" target="_blank" rel="noopener noreferrer" 
                    onclick="checkLink(event, this.href)"
                    class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
                     <div>
@@ -151,6 +144,7 @@
                     </span>
                 </a>
 
+                <!-- Location Card Pune -->
                 <a href="https://maps.app.goo.gl/D6Z3B6XY7pduSbyS8" target="_blank" rel="noopener noreferrer" 
                    onclick="checkLink(event, this.href)"
                    class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
@@ -209,26 +203,6 @@
                     </span>
                 </a>
 
-                <!-- Phone Card -->
-                <a href="tel:9327945501" 
-                   onclick="checkLink(event, this.href)"
-                   class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 text-xl group-hover:bg-purple-600 group-hover:text-white transition-colors duration-200">
-                            <i class="fa-solid fa-phone"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 mb-1 flex items-center justify-between">
-                            24x7 Emergency
-                            <i class="fa-solid fa-phone-flip text-xs text-slate-400 group-hover:text-purple-600 transition"></i>
-                        </h4>
-                        <p class="text-xs text-slate-500 mb-2">Direct call for site emergencies, incident, escalation or more.</p>
-                        <p class="text-sm font-mono font-semibold text-slate-800">+91 9327945501</p>
-                    </div>
-                    <span class="inline-flex items-center text-xs font-semibold text-purple-600 group-hover:translate-x-1 transition-transform mt-4">
-                        Call <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
-                    </span>
-                </a>
-
             </div>
         </div>
 
@@ -239,7 +213,6 @@
                     <h3 class="text-xl font-bold text-slate-900">Operations & Office</h3>
                     <p class="text-xs text-slate-500">Contact your duty officers, Area officers, Assignment Managers, and office team.</p>
                 </div>
-                <!-- Small Buttons -->
                 <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
                     <button onclick="switchTab('operations')" id="tab-operations" class="tab-btn px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition bg-brand-600 text-white shadow-sm">
                         Ops Team
@@ -265,7 +238,6 @@
                     ];
                     
                     document.write(opsMembers.map(member => {
-                        // Extract initials strictly from actual name parts (ignoring salutations like "Mr:" or "Mrs:")
                         const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
                         const initials = cleanParts.length >= 2 
                             ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
@@ -305,7 +277,6 @@
                     ];
                     
                     document.write(officeMembers.map(member => {
-                        // Extract initials strictly from actual name parts (ignoring salutations like "Mr:" or "Mrs:")
                         const cleanParts = member.name.replace(/(Mr|Mrs|Ms|Dr)\s*:\s*/gi, '').trim().split(' ');
                         const initials = cleanParts.length >= 2 
                             ? (cleanParts[0][0] + cleanParts[1][0]).toUpperCase() 
@@ -334,7 +305,7 @@
 
     </main>
 
-    <!-- Modal Dialog for Incident / Leave Request -->
+    <!-- Modal Dialog -->
     <div id="ticketModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200">
             <button onclick="toggleModal('ticketModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg p-1">
@@ -347,21 +318,28 @@
             <form onsubmit="handleFormSubmit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Your Employee ID:</label>
-                    <input type="text" required placeholder="e.g. EMP/PUN01234" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="ticketEmpId" required placeholder="e.g. EMP/PUN01234" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Company Name:</label>
-                    <input type="text" required placeholder="e.g. Tech Park" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="ticketCompany" required placeholder="e.g. Tech Park" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subject:</label>
+                    <input type="text" id="ticketSubject" required placeholder="e.g. Attendance Issue" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address:</label>
+                    <input type="email" id="ticketEmail" required placeholder="e.g. name@example.com" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Remark:</label>
-                    <textarea rows="3" required placeholder="Describe your issue..." class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                    <textarea id="ticketRemark" rows="3" required placeholder="Describe your issue..." class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
                 </div>
-                <!-- Inline Error Indicator for Form -->
                 <p id="formErrorMsg" class="text-xs text-red-500 font-medium hidden"></p>
                 <div class="pt-2 flex justify-end gap-2">
                     <button type="button" onclick="toggleModal('ticketModal')" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm">Submit</button>
+                    <button type="submit" id="submitBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm">Submit</button>
                 </div>
             </form>
         </div>
@@ -395,15 +373,12 @@
     </footer>
 
     <script>
-        // Dynamically set current year in footer
         document.getElementById("currentYear").textContent = new Date().getFullYear();
 
-        // Header Search Toggle & Outside Click Handler
         function toggleHeaderSearch(e) {
             e.stopPropagation();
             const searchBox = document.getElementById('headerSearchBox');
             const searchInput = document.getElementById('searchInput');
-            
             if (searchBox.classList.contains('hidden')) {
                 searchBox.classList.remove('hidden');
                 searchInput.focus();
@@ -416,7 +391,6 @@
             document.getElementById('headerSearchBox').classList.add('hidden');
         }
 
-        // Hide search box automatically when clicking outside
         document.addEventListener('click', function(event) {
             const wrapper = document.getElementById('headerSearchWrapper');
             const searchBox = document.getElementById('headerSearchBox');
@@ -425,25 +399,21 @@
             }
         });
 
-        // Tab Switch Logic for Operations & Office Team
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
                 btn.classList.add('text-slate-600', 'hover:bg-slate-200');
             });
-
             document.getElementById(`content-${tabName}`).classList.remove('hidden');
             const activeBtn = document.getElementById(`tab-${tabName}`);
             activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-200');
             activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
         }
 
-        // Live Search Filter for Cards and Team Members
         function filterCards() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const items = document.querySelectorAll('.searchable-item');
-
             items.forEach(item => {
                 const text = item.innerText.toLowerCase();
                 if (text.includes(query)) {
@@ -454,7 +424,6 @@
             });
         }
 
-        // Modal Handler
         function toggleModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -462,20 +431,50 @@
             }
         }
 
-        // Form Submit Handler
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
+            
+            const errorEl = document.getElementById('formErrorMsg');
+            errorEl.classList.add('hidden');
+            
+            // Capture all form values including Subject and Email
+            const employeeId = document.getElementById('ticketEmpId').value;
+            const company = document.getElementById('ticketCompany').value;
+            const subject = document.getElementById('ticketSubject').value;
+            const email = document.getElementById('ticketEmail').value;
+            const remark = document.getElementById('ticketRemark').value;
+
+            // Your Power Automate URL
+            const powerAutomateUrl = "https://default7055ba6336ec48e083eb932bb1602d.a1.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/28/workflows/20ab591d138948adb435ddb768fd6bad/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=A_lGxRU47nHr3DbFWYyKezULhcWahe-3yBYiamskbIs";
+
             try {
+                await fetch(powerAutomateUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        employeeId: employeeId,
+                        company: company,
+                        subject: subject,
+                        email: email,
+                        remark: remark,
+                        submittedAt: new Date().toISOString()
+                    })
+                });
+
                 alert("Report successfully sent to control room. Your officer will review shortly.");
                 toggleModal('ticketModal');
+                e.target.reset();
+                
             } catch (err) {
-                const errorEl = document.getElementById('formErrorMsg');
+                console.error(err);
                 errorEl.innerText = "Error: Report submission failed. Please check network and try again.";
                 errorEl.classList.remove('hidden');
             }
         }
 
-        // Link and Page Error Diagnostic Handler
         function checkLink(event, url) {
             if (url.includes('index.html') && window.location.protocol === 'file:') {
                 try {
