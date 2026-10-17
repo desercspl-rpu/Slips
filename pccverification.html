@@ -111,6 +111,23 @@
     #infoBlock strong {
       color: #0f172a;
     }
+    .admin-comment-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+    .error-msg {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 6px;
+      margin-bottom: 0;
+      display: block;
+      font-weight: 500;
+    }
     .status-msg { 
       text-align: center; 
       font-size: 17px; 
@@ -132,11 +149,13 @@
   <div id="searchSection">
     <label>Enter Employee ID:</label>
     <input type="text" id="empIdInput" placeholder="Enter Employee ID here..." autocomplete="off">
+    <div id="searchError" class="error-msg"></div>
     <button onclick="verifyProfileState()" id="verifyBtn">Verify</button>
   </div>
 
   <div id="detailsCard" class="card" style="display:none;">
     <h3 style="margin-top:0;">Verify Details:</h3>
+    <div id="adminCommentContainer"></div>
     <div id="infoBlock"></div>
     <button onclick="proceedToApplication()" id="proceedBtn">Continue</button>
   </div>
@@ -145,25 +164,20 @@
     <label>Registered Mobile Number:</label>
     <input type="tel" id="mobileNum" placeholder="Enter mobile number" maxlength="10">
     
-    <label>You can attach PV (Optional):</label>
-    <input type="file" id="fileUpload">
+    <label>Attach PV Document (Image / PDF Required):</label>
+    <input type="file" id="fileUpload" accept="image/*,.pdf" required>
+    <div id="appError" class="error-msg"></div>
     
-    <button onclick="dispatchOtpRequest()" id="sendOtpBtn">Send OTP</button>
-  </div>
-
-  <div id="otpForm" class="card" style="display:none;">
-    <label>Enter OTP:</label>
-    <input type="text" id="otpToken" placeholder="6digit OTP" maxlength="6">
-    <button onclick="validateOtpSubmission()" id="submitOtpBtn">Submit</button>
+    <button onclick="dispatchApplication()" id="submitAppBtn">Submit to Office</button>
   </div>
 
   <div id="terminalStatusBox" class="status-msg" style="display:none;"></div>
 </div>
 
 <script>
-// Replace with your current deployment execution endpoint URL context string reference link
-const API_URL = "https://script.google.com/macros/s/AKfycbx-f15dJApYuUk3SrAGIk3Y_73FyBul8xCCeRBvEIKoIe82xA5HK3QBK-t_yrsR-Urm/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby8EULUndKvqSTLYQku-5V3g0Ci7ABduGcZk2-BRxS8zwbDkpQsdE7NglzI-vUCIeDlkw/exec";
 let currentSessionProfile = {};
+let currentAdminComment = "";
 
 function updateUiState(btnId, loadingText, isDone) {
   const btn = document.getElementById(btnId);
@@ -174,8 +188,14 @@ function updateUiState(btnId, loadingText, isDone) {
 }
 
 function verifyProfileState() {
+  const searchError = document.getElementById("searchError");
+  searchError.innerText = "";
+  
   const empId = document.getElementById("empIdInput").value.trim();
-  if(!empId) { alert("Employee ID cannot be empty!"); return; }
+  if(!empId) { 
+    searchError.innerText = "Employee ID cannot be empty!"; 
+    return; 
+  }
   
   updateUiState("verifyBtn", "Verifying...", false);
   
@@ -186,23 +206,32 @@ function verifyProfileState() {
   .then(r => r.json())
   .then(res => {
     updateUiState("verifyBtn", "Verify", true);
-    if(res.status === "error") { alert(res.message); return; }
+    if(res.status === "error") { 
+      searchError.innerText = res.message; 
+      return; 
+    }
     
     currentSessionProfile = res.profile;
+    currentAdminComment = res.comment || "";
     
-    // Evaluate workflows based on the returned state
-    if(res.state === "VERIFIED_DONE") {
+    if(res.state === "VERIFIED") {
        showTerminalMessage("Your verification Done!");
        return;
     }
-    if(res.state === "SUBMITTED_TO_OFFICE") {
-       showTerminalMessage("Your application submitted to office.");
+    if(res.state === "PENDING_VERIFICATION" || res.state === "SUBMITTED_TO_OFFICE") {
+       showTerminalMessage("You can check status after working 24hrs");
        return;
     }
     
-    // Hide verify button / lookups immediately
     document.getElementById("searchSection").style.display = "none";
     document.getElementById("detailsCard").style.display = "block";
+    
+    const commentContainer = document.getElementById("adminCommentContainer");
+    if(currentAdminComment.trim() !== "") {
+      commentContainer.innerHTML = `<div class="admin-comment-box"><strong>Admin Remark:</strong> ${currentAdminComment}</div>`;
+    } else {
+      commentContainer.innerHTML = "";
+    }
     
     document.getElementById("infoBlock").innerHTML = `
       <p><strong>Emp ID:</strong> ${currentSessionProfile.empId}</p>
@@ -213,12 +242,6 @@ function verifyProfileState() {
       <p><strong>UAN:</strong> ${currentSessionProfile.uan}</p>
       <p><strong>ESIC:</strong> ${currentSessionProfile.esic}</p>
     `;
-    
-    // Route returning users to their active steps
-    if(res.state === "PENDING_OTP") {
-       document.getElementById("detailsCard").style.display = "none";
-       document.getElementById("otpForm").style.display = "block";
-    }
   });
 }
 
@@ -227,70 +250,55 @@ function proceedToApplication() {
   document.getElementById("applicationForm").style.display = "block";
 }
 
-function dispatchOtpRequest() {
+function dispatchApplication() {
+  const appError = document.getElementById("appError");
+  appError.innerText = "";
+
   const mobile = document.getElementById("mobileNum").value.trim();
-  if(mobile.length !== 10 || isNaN(mobile)) { alert("Mobile number must be exactly 10 digits and cannot be empty!"); return; }
+  if(mobile.length !== 10 || isNaN(mobile)) { 
+    appError.innerText = "Mobile number must be exactly 10 digits and cannot be empty!"; 
+    return; 
+  }
   
   const fileInput = document.getElementById("fileUpload");
   const file = fileInput.files[0];
   
-  updateUiState("sendOtpBtn", "Verifying...", false);
+  if (!file) {
+    appError.innerText = "Please attach a required PV document (Image or PDF)!";
+    return;
+  }
+  
+  updateUiState("submitAppBtn", "Submitting...", false);
   
   let payload = {
     action: "submitMobileAndFile",
     empId: currentSessionProfile.empId,
     name: currentSessionProfile.name,
     email: currentSessionProfile.email,
-    mobile: mobile
+    mobile: mobile,
+    previousComment: currentAdminComment
   };
   
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      payload.fileData = e.target.result.split(",")[1];
-      payload.mimeType = file.type;
-      payload.fileName = file.name;
-      transmitStep1(payload);
-    };
-    reader.readAsDataURL(file);
-  } else {
-    payload.fileData = ""; payload.mimeType = ""; payload.fileName = "";
-    transmitStep1(payload);
-  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    payload.fileData = e.target.result.split(",")[1];
+    payload.mimeType = file.type;
+    payload.fileName = file.name;
+    transmitApplication(payload);
+  };
+  reader.readAsDataURL(file);
 }
 
-function transmitStep1(payload) {
+function transmitApplication(payload) {
+  const appError = document.getElementById("appError");
   fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
   .then(r => r.json())
   .then(res => {
-    updateUiState("sendOtpBtn", "Send OTP", true);
+    updateUiState("submitAppBtn", "Submit to Office", true);
     if(res.status === "success") {
-      alert("OTP Sent ✅ Now enter OTP");
-      document.getElementById("applicationForm").style.display = "none";
-      document.getElementById("otpForm").style.display = "block";
+      showTerminalMessage("You can check status after working 24hrs");
     } else {
-      alert(res.message);
-    }
-  });
-}
-
-function validateOtpSubmission() {
-  const otp = document.getElementById("otpToken").value.trim();
-  if(otp.length !== 6 || isNaN(otp)) { alert("OTP code must be exactly 6 digits and cannot be empty!"); return; }
-  
-  updateUiState("submitOtpBtn", "Verifying...", false);
-  
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "submitOtp", empId: currentSessionProfile.empId, otp: otp })
-  })
-  .then(r => r.json())
-  .then(res => {
-    updateUiState("submitOtpBtn", "Submit", true);
-    if(res.status === "success") {
-      showTerminalMessage("Your application submitted to office.");
-    } else {
-      alert(res.message);
+      appError.innerText = res.message;
     }
   });
 }
@@ -299,7 +307,6 @@ function showTerminalMessage(msg) {
   document.getElementById("searchSection").style.display = "none";
   document.getElementById("detailsCard").style.display = "none";
   document.getElementById("applicationForm").style.display = "none";
-  document.getElementById("otpForm").style.display = "none";
   
   const target = document.getElementById("terminalStatusBox");
   target.style.display = "block";
