@@ -116,7 +116,7 @@
 
     <script>
         const CONFIG = {
-            token: "ghp_YOUR_PERSONAL_ACCESS_TOKEN_HERE", // Replace with your GitHub PAT
+            token: "ghp_YOUR_PERSONAL_ACCESS_TOKEN_HERE", // <-- REPLACE THIS WITH YOUR ACTUAL GITHUB PAT
             owner: "desercspl-rpu",
             repo: "Slips",
             branch: "main"
@@ -140,7 +140,7 @@
             };
             if (body) options.body = JSON.stringify(body);
             const response = await fetch(url, options);
-            if (response.status === 404) return null; // Not found is normal for empty folders/files
+            if (response.status === 404) return null;
             return response;
         }
 
@@ -248,15 +248,12 @@
             const lastSecPath = `${basePath}/LastSec`;
             const lastThiPath = `${basePath}/LastThi`;
 
-            // 1. Get files in Last, LastSec
             const filesLast = await getFolderFiles(lastPath);
             const filesLastSec = await getFolderFiles(lastSecPath);
 
-            // Helper to copy files from source folder to target folder
             async function moveFiles(files, targetFolder, actionName) {
                 for (const file of files) {
                     if (file.type === 'file') {
-                        // Fetch raw file content
                         const fileRes = await fetch(file.download_url);
                         const blob = await fileRes.blob();
                         
@@ -283,8 +280,7 @@
                 }
             }
 
-            // Helper to delete old files in a folder
-            async function clearFolder(files, folderName) {
+            async function clearFolder(files) {
                 for (const file of files) {
                     if (file.type === 'file') {
                         const sha = await getFileSha(file.path);
@@ -299,19 +295,16 @@
                 }
             }
 
-            // Execute shift chain:
-            // LastSec -> LastThi
             if (filesLastSec.length > 0) {
                 log("Moving LastSec files to LastThi...");
                 await moveFiles(filesLastSec, lastThiPath, "Shift LastSec to LastThi");
-                await clearFolder(filesLastSec, lastSecPath);
+                await clearFolder(filesLastSec);
             }
 
-            // Last -> LastSec
             if (filesLast.length > 0) {
                 log("Moving Last files to LastSec...");
                 await moveFiles(filesLast, lastSecPath, "Shift Last to LastSec");
-                await clearFolder(filesLast, lastPath);
+                await clearFolder(filesLast);
             }
 
             log("Folder shift completed successfully!");
