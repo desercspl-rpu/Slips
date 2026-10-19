@@ -175,7 +175,7 @@
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycby8EULUndKvqSTLYQku-5V3g0Ci7ABduGcZk2-BRxS8zwbDkpQsdE7NglzI-vUCIeDlkw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyTPMn_czxqQdaR-eOwHEh8_4_E2_Ylb0DxbjIldg0bpT_iIbnLNdxH_90EAXl_Hic7iQ/exec";
 let currentSessionProfile = {};
 let currentAdminComment = "";
 
@@ -256,7 +256,7 @@ function dispatchApplication() {
 
   const mobile = document.getElementById("mobileNum").value.trim();
   if(mobile.length !== 10 || isNaN(mobile)) { 
-    appError.innerText = "Mobile number must be exactly 10 digits and cannot be empty!"; 
+    appError.innerText = "Mobile number must, cannot be empty!"; 
     return; 
   }
   
