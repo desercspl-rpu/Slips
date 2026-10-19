@@ -3,226 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payslip GitHub Manager</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>GitHub PaySlips Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 { margin-top: 0; color: #0366d6; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2ea44f;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover { background-color: #2c974b; }
+        .danger-btn { background-color: #d73a49; }
+        .danger-btn:hover { background-color: #cb2431; }
+        pre {
+            background: #f6f8fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 200px;
+        }
+    </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="max-w-xl w-full bg-white shadow-xl rounded-2xl p-8 border border-slate-200">
-        <div class="flex items-center space-x-3 mb-6">
-            <div class="bg-blue-600 p-3 rounded-xl text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-            </div>
-            <div>
-                <h1 class="text-2xl font-bold text-slate-800">Payslip Archive Manager</h1>
-                <p class="text-sm text-slate-500">Manage CSPL & CFESPL directories & shift files</p>
-            </div>
-        </div>
+    <div class="card">
+        <h2>Upload PaySlip File</h2>
+        <label>Select Category:</label>
+        <select id="uploadCategory">
+            <option value="CSPL">CSPL</option>
+            <option value="CFESPL">CFESPL</option>
+        </select>
 
-        <form id="payslipForm" class="space-y-5">
-            <!-- GitHub Config -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">GitHub Owner / User</label>
-                    <input type="text" id="ghOwner" placeholder="username" required class="w-full text-sm px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Repository Name</label>
-                    <input type="text" id="ghRepo" placeholder="repo-name" required class="w-full text-sm px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">GitHub Personal Access Token (PAT)</label>
-                    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" required class="w-full text-sm px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    <p class="text-[11px] text-slate-400 mt-1">Requires `repo` scope permissions.</p>
-                </div>
-            </div>
+        <label>Select Period:</label>
+        <select id="uploadSubfolder">
+            <option value="Last">Last</option>
+            <option value="LastSec">LastSec</option>
+            <option value="LastThi">LastThi</option>
+        </select>
 
-            <!-- Company Selection -->
-            <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">1. Select Company</label>
-                <select id="company" class="w-full px-4 py-2.5 border rounded-xl bg-white focus:ring-2 focus:ring-blue-500 outline-none font-medium text-slate-700">
-                    <option value="CSPL">CSPL</option>
-                    <option value="CFESPL">CFESPL</option>
-                </select>
-            </div>
+        <label>Select File:</label>
+        <input type="file" id="fileInput">
 
-            <!-- Action Selection -->
-            <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">2. Select Action</label>
-                <select id="actionType" class="w-full px-4 py-2.5 border rounded-xl bg-white focus:ring-2 focus:ring-blue-500 outline-none font-medium text-slate-700">
-                    <option value="shift_and_upload">Shift Folders (Last ➔ LastSec ➔ LastThi) & Upload New</option>
-                    <option value="only_shift">Only Shift Folders (No New Upload)</option>
-                </select>
-            </div>
+        <label>Commit Message:</label>
+        <input type="text" id="uploadCommit" value="Upload payslip via web interface">
+        <button onclick="uploadFile()">Upload File</button>
+    </div>
 
-            <!-- File Upload Section -->
-            <div id="fileUploadSection">
-                <label class="block text-sm font-bold text-slate-700 mb-1">3. Upload PDF File(s) for 'Last'</label>
-                <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer relative">
-                    <input type="file" id="pdfFiles" accept="application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    <p class="text-sm font-medium text-slate-700">Drag & drop PDFs here, or <span class="text-blue-600 underline">browse</span></p>
-                    <p id="fileCount" class="text-xs text-slate-400 mt-1">No files selected</p>
-                </div>
-            </div>
+    <div class="card">
+        <h2>Remove PaySlip File</h2>
+        <label>Select Category:</label>
+        <select id="deleteCategory">
+            <option value="CSPL">CSPL</option>
+            <option value="CFESPL">CFESPL</option>
+        </select>
 
-            <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-200">
-                Execute Process on GitHub
-            </button>
-        </form>
+        <label>Select Period:</label>
+        <select id="deleteSubfolder">
+            <option value="Last">Last</option>
+            <option value="LastSec">LastSec</option>
+            <option value="LastThi">LastThi</option>
+        </select>
 
-        <!-- Status Box -->
-        <div id="statusBox" class="hidden mt-6 p-4 rounded-xl text-sm font-medium"></div>
+        <label>File Name to Delete (e.g., slip.pdf):</label>
+        <input type="text" id="deleteFileName" placeholder="filename.pdf">
+
+        <label>Commit Message:</label>
+        <input type="text" id="deleteCommit" value="Delete payslip via web interface">
+        <button class="danger-btn" onclick="removeFile()">Remove File</button>
+    </div>
+
+    <div class="card">
+        <h2>Data Shift Operation</h2>
+        <p>Shifts files: <code>Last</code> &rarr; <code>LastSec</code> &rarr; <code>LastThi</code> for the selected category.</p>
+        <label>Select Category to Shift:</label>
+        <select id="shiftCategory">
+            <option value="CSPL">CSPL</option>
+            <option value="CFESPL">CFESPL</option>
+        </select>
+        <button onclick="shiftFolders()">Execute Folder Shift</button>
+    </div>
+
+    <div class="card">
+        <h2>Console Output</h2>
+        <pre id="output">Ready...</pre>
     </div>
 
     <script>
-        const fileInput = document.getElementById('pdfFiles');
-        const fileCount = document.getElementById('fileCount');
-        const actionType = document.getElementById('actionType');
-        const fileUploadSection = document.getElementById('fileUploadSection');
+        const CONFIG = {
+            token: "ghp_YOUR_PERSONAL_ACCESS_TOKEN_HERE", // Replace with your GitHub PAT
+            owner: "desercspl-rpu",
+            repo: "Slips",
+            branch: "main"
+        };
 
-        fileInput.addEventListener('change', () => {
-            fileCount.innerText = fileInput.files.length > 0 ? `${fileInput.files.length} file(s) chosen` : "No files selected";
-        });
+        function log(message) {
+            const output = document.getElementById('output');
+            output.textContent += "\n" + message;
+            output.scrollTop = output.scrollHeight;
+        }
 
-        actionType.addEventListener('change', () => {
-            if (actionType.value === 'only_shift') {
-                fileUploadSection.style.display = 'none';
-            } else {
-                fileUploadSection.style.display = 'block';
-            }
-        });
-
-        document.getElementById('payslipForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const owner = document.getElementById('ghOwner').value.trim();
-            const repo = document.getElementById('ghRepo').value.trim();
-            const token = document.getElementById('ghToken').value.trim();
-            const company = document.getElementById('company').value;
-            const action = document.getElementById('actionType').value;
-            const statusBox = document.getElementById('statusBox');
-            const submitBtn = document.getElementById('submitBtn');
-
-            statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200 block";
-            statusBox.innerText = "Connecting to GitHub & fetching repository contents...";
-            submitBtn.disabled = true;
-
-            const headers = {
-                "Authorization": `Bearer ${token}`,
-                "Accept": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28"
+        async function apiRequest(endpoint, method = 'GET', body = null) {
+            const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/${endpoint}`;
+            const options = {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                }
             };
+            if (body) options.body = JSON.stringify(body);
+            const response = await fetch(url, options);
+            if (response.status === 404) return null; // Not found is normal for empty folders/files
+            return response;
+        }
 
-            const basePath = `PaySlips/${company}`;
+        async function getFileSha(path) {
+            const res = await apiRequest(`contents/${path}?ref=${CONFIG.branch}`);
+            if (res && res.ok) {
+                const data = await res.json();
+                return data.sha;
+            }
+            return null;
+        }
 
-            try {
-                // Helper to fetch directory contents
-                async function getDirFiles(folderName) {
-                    try {
-                        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${basePath}/${folderName}`, { headers });
-                        if (res.status === 404) return [];
-                        if (!res.ok) throw new Error(`Failed to read folder ${folderName}`);
-                        return await res.json();
-                    } catch (e) {
-                        return [];
+        async function getFolderFiles(path) {
+            const res = await apiRequest(`contents/${path}?ref=${CONFIG.branch}`);
+            if (res && res.ok) {
+                const data = await res.json();
+                return Array.isArray(data) ? data : [];
+            }
+            return [];
+        }
+
+        async function uploadFile() {
+            const category = document.getElementById('uploadCategory').value;
+            const subfolder = document.getElementById('uploadSubfolder').value;
+            const commitMessage = document.getElementById('uploadCommit').value.trim();
+            const fileInput = document.getElementById('fileInput');
+
+            if (fileInput.files.length === 0) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const path = `PaySlips/${category}/${subfolder}/${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const base64Content = e.target.result.split(',')[1];
+                    const sha = await getFileSha(path);
+
+                    const bodyData = {
+                        message: commitMessage,
+                        content: base64Content,
+                        branch: CONFIG.branch
+                    };
+                    if (sha) bodyData.sha = sha;
+
+                    log(`Uploading to ${path}...`);
+                    const res = await apiRequest(`contents/${path}`, 'PUT', bodyData);
+
+                    if (res && res.ok) {
+                        log(`Successfully uploaded ${file.name}!`);
+                    } else {
+                        const err = await res.json();
+                        log(`Error uploading: ${err.message}`);
                     }
+                } catch (error) {
+                    log(`Error: ${error.message}`);
                 }
+            };
+            reader.readAsDataURL(file);
+        }
 
-                // Helper to delete a file from GitHub repo
-                async function deleteFile(path, sha) {
-                    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-                        method: 'DELETE',
-                        headers: { ...headers, "Content-Type": "application/json" },
-                        body: JSON.stringify({ message: `Archive shift: removing old ${path}`, sha })
-                    });
-                }
+        async function removeFile() {
+            const category = document.getElementById('deleteCategory').value;
+            const subfolder = document.getElementById('deleteSubfolder').value;
+            const fileName = document.getElementById('deleteFileName').value.trim();
+            const commitMessage = document.getElementById('deleteCommit').value.trim();
 
-                // Helper to upload/create a file on GitHub
-                async function uploadFile(path, contentBase64, message) {
-                    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-                        method: 'PUT',
-                        headers: { ...headers, "Content-Type": "application/json" },
-                        body: JSON.stringify({ message, content: contentBase64 })
-                    });
-                }
+            if (!fileName) {
+                alert("Please provide the file name to delete.");
+                return;
+            }
 
-                statusBox.innerText = "Step 1/3: Reading existing directory structure...";
-                const lastFiles = await getDirFiles('Last');
-                const lastSecFiles = await getDirFiles('LastSec');
-                const lastThiFiles = await getDirFiles('LastThi');
+            const path = `PaySlips/${category}/${subfolder}/${fileName}`;
+            const sha = await getFileSha(path);
+            if (!sha) {
+                log(`File not found: ${path}`);
+                return;
+            }
 
-                statusBox.innerText = "Step 2/3: Shifting archives (LastSec ➔ LastThi, Last ➔ LastSec)...";
+            log(`Deleting ${path}...`);
+            const res = await apiRequest(`contents/${path}`, 'DELETE', {
+                message: commitMessage,
+                sha: sha,
+                branch: CONFIG.branch
+            });
 
-                // 1. Clear current LastThi contents
-                for (let file of lastThiFiles) {
+            if (res && res.ok) {
+                log(`Successfully deleted ${path}!`);
+            } else {
+                const err = await res.json();
+                log(`Error deleting: ${err.message}`);
+            }
+        }
+
+        async function shiftFolders() {
+            const category = document.getElementById('shiftCategory').value;
+            const basePath = `PaySlips/${category}`;
+
+            log(`Starting folder shift for ${category}...`);
+
+            const lastPath = `${basePath}/Last`;
+            const lastSecPath = `${basePath}/LastSec`;
+            const lastThiPath = `${basePath}/LastThi`;
+
+            // 1. Get files in Last, LastSec
+            const filesLast = await getFolderFiles(lastPath);
+            const filesLastSec = await getFolderFiles(lastSecPath);
+
+            // Helper to copy files from source folder to target folder
+            async function moveFiles(files, targetFolder, actionName) {
+                for (const file of files) {
                     if (file.type === 'file') {
-                        await deleteFile(file.path, file.sha);
-                    }
-                }
-
-                // 2. Move LastSec files to LastThi
-                for (let file of lastSecFiles) {
-                    if (file.type === 'file') {
-                        // Fetch raw content of LastSec file
+                        // Fetch raw file content
                         const fileRes = await fetch(file.download_url);
                         const blob = await fileRes.blob();
-                        const base64 = await toBase64(blob);
-
-                        await uploadFile(`${basePath}/LastThi/${file.name}`, base64.split(',')[1], `Shift LastSec to LastThi: ${file.name}`);
-                        await deleteFile(file.path, file.sha); // delete original from LastSec
-                    }
-                }
-
-                // 3. Move Last files to LastSec
-                for (let file of lastFiles) {
-                    if (file.type === 'file') {
-                        const fileRes = await fetch(file.download_url);
-                        const blob = await fileRes.blob();
-                        const base64 = await toBase64(blob);
-
-                        await uploadFile(`${basePath}/LastSec/${file.name}`, base64.split(',')[1], `Shift Last to LastSec: ${file.name}`);
                         
-                        if (action === 'shift_and_upload') {
-                            // If we are uploading new files, we also clear out the old Last file 
-                            // (since new files will take its place)
-                            await deleteFile(file.path, file.sha);
+                        const reader = new FileReader();
+                        await new Promise((resolve) => {
+                            reader.onload = async function(e) {
+                                const base64Content = e.target.result.split(',')[1];
+                                const targetPath = `${targetFolder}/${file.name}`;
+                                const targetSha = await getFileSha(targetPath);
+
+                                const body = {
+                                    message: `${actionName}: move ${file.name}`,
+                                    content: base64Content,
+                                    branch: CONFIG.branch
+                                };
+                                if (targetSha) body.sha = targetSha;
+
+                                await apiRequest(`contents/${targetPath}`, 'PUT', body);
+                                resolve();
+                            };
+                            reader.readAsDataURL(blob);
+                        });
+                    }
+                }
+            }
+
+            // Helper to delete old files in a folder
+            async function clearFolder(files, folderName) {
+                for (const file of files) {
+                    if (file.type === 'file') {
+                        const sha = await getFileSha(file.path);
+                        if (sha) {
+                            await apiRequest(`contents/${file.path}`, 'DELETE', {
+                                message: `Clear old file during shift: ${file.name}`,
+                                sha: sha,
+                                branch: CONFIG.branch
+                            });
                         }
                     }
                 }
-
-                // 4. Upload New Files if requested
-                if (action === 'shift_and_upload') {
-                    statusBox.innerText = "Step 3/3: Uploading new files to 'Last'...";
-                    if (fileInput.files.length === 0) {
-                        throw new Error("No PDF files were selected to upload into 'Last'!");
-                    }
-
-                    for (let file of fileInput.files) {
-                        const base64Data = await toBase64(file);
-                        await uploadFile(`${basePath}/Last/${file.name}`, base64Data.split(',')[1], `Add new payslip to Last: ${file.name}`);
-                    }
-                }
-
-                statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 block";
-                statusBox.innerText = "Success! Directory folders shifted and files updated successfully on GitHub.";
-            } catch (err) {
-                statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium bg-rose-50 text-rose-700 border border-rose-200 block";
-                statusBox.innerText = "Error: " + err.message;
-            } finally {
-                submitBtn.disabled = false;
             }
-        });
 
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
+            // Execute shift chain:
+            // LastSec -> LastThi
+            if (filesLastSec.length > 0) {
+                log("Moving LastSec files to LastThi...");
+                await moveFiles(filesLastSec, lastThiPath, "Shift LastSec to LastThi");
+                await clearFolder(filesLastSec, lastSecPath);
+            }
+
+            // Last -> LastSec
+            if (filesLast.length > 0) {
+                log("Moving Last files to LastSec...");
+                await moveFiles(filesLast, lastSecPath, "Shift Last to LastSec");
+                await clearFolder(filesLast, lastPath);
+            }
+
+            log("Folder shift completed successfully!");
+        }
     </script>
 </body>
 </html>
