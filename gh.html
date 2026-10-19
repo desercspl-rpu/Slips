@@ -1,314 +1,317 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub PaySlips Manager</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        .card {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h2 { margin-top: 0; color: #0366d6; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        select, input, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #2ea44f;
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        button:hover { background-color: #2c974b; }
-        .danger-btn { background-color: #d73a49; }
-        .danger-btn:hover { background-color: #cb2431; }
-        pre {
-            background: #f6f8fa;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-            max-height: 200px;
-        }
-    </style>
+  <title>Police Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Poppins', sans-serif; 
+      -webkit-tap-highlight-color: transparent; 
+    }
+    body { 
+      margin: 0; 
+      min-height: 100vh; 
+      background: linear-gradient(135deg, #eef2f3, #e0eafc); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 14px; 
+    }
+    .container { 
+      width: 100%; 
+      max-width: 440px; 
+      padding: 28px 25px; 
+      border-radius: 20px; 
+      background: #ffffff; 
+      border: 1px solid rgba(0, 0, 0, 0.08); 
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06), 0 5px 15px rgba(0, 0, 0, 0.04); 
+      color: #2c3e50; 
+    }
+    h2 { 
+      text-align: center; 
+      margin-top: 0;
+      margin-bottom: 22px; 
+      font-weight: 600; 
+      font-size: 24px; 
+      color: #1e293b;
+    }
+    label { 
+      font-size: 13px; 
+      font-weight: 500;
+      color: #475569; 
+      display: block; 
+      margin-top: 14px; 
+    }
+    input { 
+      width: 100%; 
+      padding: 14px; 
+      margin-top: 6px; 
+      border-radius: 12px; 
+      border: 1px solid #cbd5e1; 
+      outline: none; 
+      background: #f8fafc; 
+      color: #0f172a; 
+      font-size: 15px; 
+      transition: all 0.2s ease-in-out;
+    }
+    input:focus { 
+      background: #ffffff; 
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); 
+    }
+    input::placeholder {
+      color: #94a3b8;
+    }
+    button { 
+      width: 100%; 
+      padding: 14px; 
+      margin-top: 20px; 
+      border-radius: 12px; 
+      border: none; 
+      background: linear-gradient(135deg, #0284c7, #2563eb); 
+      color: white; 
+      font-size: 16px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s ease-in-out; 
+      min-height: 50px; 
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    button:disabled { 
+      background: #cbd5e1 !important; 
+      cursor: not-allowed; 
+      opacity: 0.8; 
+      box-shadow: none;
+    }
+    .card { 
+      margin-top: 20px; 
+      padding: 18px; 
+      border-radius: 14px; 
+      background: #f8fafc; 
+      border: 1px solid #e2e8f0; 
+    }
+    .card h3 {
+      color: #0f172a;
+      font-size: 18px;
+    }
+    #infoBlock p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #334155;
+    }
+    #infoBlock strong {
+      color: #0f172a;
+    }
+    .admin-comment-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+    .error-msg {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 6px;
+      margin-bottom: 0;
+      display: block;
+      font-weight: 500;
+    }
+    .status-msg { 
+      text-align: center; 
+      font-size: 17px; 
+      font-weight: 600; 
+      padding: 22px 18px; 
+      margin-top: 10px; 
+      border-radius: 14px; 
+      background: #f0f9ff; 
+      color: #0369a1;
+      border: 1.5px dashed #0284c7; 
+    }
+  </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Upload PaySlip File</h2>
-        <label>Select Category:</label>
-        <select id="uploadCategory">
-            <option value="CSPL">CSPL</option>
-            <option value="CFESPL">CFESPL</option>
-        </select>
+<div class="container">
+  <h2>🔍 Police Verification</h2>
+  
+  <div id="searchSection">
+    <label>Enter Employee ID:</label>
+    <input type="text" id="empIdInput" placeholder="Enter Employee ID here..." autocomplete="off">
+    <div id="searchError" class="error-msg"></div>
+    <button onclick="verifyProfileState()" id="verifyBtn">Verify</button>
+  </div>
 
-        <label>Select Period:</label>
-        <select id="uploadSubfolder">
-            <option value="Last">Last</option>
-            <option value="LastSec">LastSec</option>
-            <option value="LastThi">LastThi</option>
-        </select>
+  <div id="detailsCard" class="card" style="display:none;">
+    <h3 style="margin-top:0;">Verify Details:</h3>
+    <div id="adminCommentContainer"></div>
+    <div id="infoBlock"></div>
+    <button onclick="proceedToApplication()" id="proceedBtn">Continue</button>
+  </div>
 
-        <label>Select File:</label>
-        <input type="file" id="fileInput">
+  <div id="applicationForm" class="card" style="display:none;">
+    <label>Registered Mobile Number:</label>
+    <input type="tel" id="mobileNum" placeholder="Enter mobile number" maxlength="10">
+    
+    <label>Attach PV Document (Image / PDF Required):</label>
+    <input type="file" id="fileUpload" accept="image/*,.pdf" required>
+    <div id="appError" class="error-msg"></div>
+    
+    <button onclick="dispatchApplication()" id="submitAppBtn">Submit to Office</button>
+  </div>
 
-        <label>Commit Message:</label>
-        <input type="text" id="uploadCommit" value="Upload payslip via web interface">
-        <button onclick="uploadFile()">Upload File</button>
-    </div>
+  <div id="terminalStatusBox" class="status-msg" style="display:none;"></div>
+</div>
 
-    <div class="card">
-        <h2>Remove PaySlip File</h2>
-        <label>Select Category:</label>
-        <select id="deleteCategory">
-            <option value="CSPL">CSPL</option>
-            <option value="CFESPL">CFESPL</option>
-        </select>
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyTPMn_czxqQdaR-eOwHEh8_4_E2_Ylb0DxbjIldg0bpT_iIbnLNdxH_90EAXl_Hic7iQ/exec";
+let currentSessionProfile = {};
+let currentAdminComment = "";
 
-        <label>Select Period:</label>
-        <select id="deleteSubfolder">
-            <option value="Last">Last</option>
-            <option value="LastSec">LastSec</option>
-            <option value="LastThi">LastThi</option>
-        </select>
+function updateUiState(btnId, loadingText, isDone) {
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    btn.disabled = !isDone;
+    btn.innerText = loadingText;
+  }
+}
 
-        <label>File Name to Delete (e.g., slip.pdf):</label>
-        <input type="text" id="deleteFileName" placeholder="filename.pdf">
+function verifyProfileState() {
+  const searchError = document.getElementById("searchError");
+  searchError.innerText = "";
+  
+  const empId = document.getElementById("empIdInput").value.trim();
+  if(!empId) { 
+    searchError.innerText = "Employee ID cannot be empty!"; 
+    return; 
+  }
+  
+  updateUiState("verifyBtn", "Verifying...", false);
+  
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ action: "getEmployeeStatus", empId: empId })
+  })
+  .then(r => r.json())
+  .then(res => {
+    updateUiState("verifyBtn", "Verify", true);
+    if(res.status === "error") { 
+      searchError.innerText = res.message; 
+      return; 
+    }
+    
+    currentSessionProfile = res.profile;
+    currentAdminComment = res.comment || "";
+    
+    if(res.state === "VERIFIED") {
+       showTerminalMessage("Your verification Done!");
+       return;
+    }
+    if(res.state === "PENDING_VERIFICATION" || res.state === "SUBMITTED_TO_OFFICE") {
+       showTerminalMessage("You can check status after working 24hrs");
+       return;
+    }
+    
+    document.getElementById("searchSection").style.display = "none";
+    document.getElementById("detailsCard").style.display = "block";
+    
+    const commentContainer = document.getElementById("adminCommentContainer");
+    if(currentAdminComment.trim() !== "") {
+      commentContainer.innerHTML = `<div class="admin-comment-box"><strong>Admin Remark:</strong> ${currentAdminComment}</div>`;
+    } else {
+      commentContainer.innerHTML = "";
+    }
+    
+    document.getElementById("infoBlock").innerHTML = `
+      <p><strong>Emp ID:</strong> ${currentSessionProfile.empId}</p>
+      <p><strong>Name:</strong> ${currentSessionProfile.name}</p>
+      <p><strong>DOB:</strong> ${currentSessionProfile.dob}</p>
+      <p><strong>Designation:</strong> ${currentSessionProfile.designation}</p>
+      <p><strong>Father Name:</strong> ${currentSessionProfile.father}</p>
+      <p><strong>UAN:</strong> ${currentSessionProfile.uan}</p>
+      <p><strong>ESIC:</strong> ${currentSessionProfile.esic}</p>
+    `;
+  });
+}
 
-        <label>Commit Message:</label>
-        <input type="text" id="deleteCommit" value="Delete payslip via web interface">
-        <button class="danger-btn" onclick="removeFile()">Remove File</button>
-    </div>
+function proceedToApplication() {
+  document.getElementById("detailsCard").style.display = "none";
+  document.getElementById("applicationForm").style.display = "block";
+}
 
-    <div class="card">
-        <h2>Data Shift Operation</h2>
-        <p>Shifts files: <code>Last</code> &rarr; <code>LastSec</code> &rarr; <code>LastThi</code> for the selected category.</p>
-        <label>Select Category to Shift:</label>
-        <select id="shiftCategory">
-            <option value="CSPL">CSPL</option>
-            <option value="CFESPL">CFESPL</option>
-        </select>
-        <button onclick="shiftFolders()">Execute Folder Shift</button>
-    </div>
+function dispatchApplication() {
+  const appError = document.getElementById("appError");
+  appError.innerText = "";
 
-    <div class="card">
-        <h2>Console Output</h2>
-        <pre id="output">Ready...</pre>
-    </div>
+  const mobile = document.getElementById("mobileNum").value.trim();
+  if(mobile.length !== 10 || isNaN(mobile)) { 
+    appError.innerText = "Mobile number must, cannot be empty!"; 
+    return; 
+  }
+  
+  const fileInput = document.getElementById("fileUpload");
+  const file = fileInput.files[0];
+  
+  if (!file) {
+    appError.innerText = "Please attach a required PV document (Image or PDF)!";
+    return;
+  }
+  
+  updateUiState("submitAppBtn", "Submitting...", false);
+  
+  let payload = {
+    action: "submitMobileAndFile",
+    empId: currentSessionProfile.empId,
+    name: currentSessionProfile.name,
+    email: currentSessionProfile.email,
+    mobile: mobile,
+    previousComment: currentAdminComment
+  };
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    payload.fileData = e.target.result.split(",")[1];
+    payload.mimeType = file.type;
+    payload.fileName = file.name;
+    transmitApplication(payload);
+  };
+  reader.readAsDataURL(file);
+}
 
-    <script>
-        const CONFIG = {
-            token: "ghp_YOUR_PERSONAL_ACCESS_TOKEN_HERE", // <-- REPLACE THIS ENTIRE STRING WITH YOUR REAL GITHUB PAT
-            owner: "desercspl-rpu",
-            repo: "Slips",
-            branch: "main"
-        };
+function transmitApplication(payload) {
+  const appError = document.getElementById("appError");
+  fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
+  .then(r => r.json())
+  .then(res => {
+    updateUiState("submitAppBtn", "Submit to Office", true);
+    if(res.status === "success") {
+      showTerminalMessage("You can check status after working 24hrs");
+    } else {
+      appError.innerText = res.message;
+    }
+  });
+}
 
-        function log(message) {
-            const output = document.getElementById('output');
-            output.textContent += "\n" + message;
-            output.scrollTop = output.scrollHeight;
-        }
-
-        async function apiRequest(endpoint, method = 'GET', body = null) {
-            const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/${endpoint}`;
-            const options = {
-                method: method,
-                headers: {
-                    'Authorization': `Bearer ${CONFIG.token}`,
-                    'Accept': 'application/vnd.github+json',
-                    'Content-Type': 'application/json'
-                }
-            };
-            if (body) options.body = JSON.stringify(body);
-            const response = await fetch(url, options);
-            if (response.status === 404) return null;
-            return response;
-        }
-
-        async function getFileSha(path) {
-            const res = await apiRequest(`contents/${path}?ref=${CONFIG.branch}`);
-            if (res && res.ok) {
-                const data = await res.json();
-                return data.sha;
-            }
-            return null;
-        }
-
-        async function getFolderFiles(path) {
-            const res = await apiRequest(`contents/${path}?ref=${CONFIG.branch}`);
-            if (res && res.ok) {
-                const data = await res.json();
-                return Array.isArray(data) ? data : [];
-            }
-            return [];
-        }
-
-        async function uploadFile() {
-            const category = document.getElementById('uploadCategory').value;
-            const subfolder = document.getElementById('uploadSubfolder').value;
-            const commitMessage = document.getElementById('uploadCommit').value.trim();
-            const fileInput = document.getElementById('fileInput');
-
-            if (fileInput.files.length === 0) {
-                alert("Please select a file to upload.");
-                return;
-            }
-
-            const file = fileInput.files[0];
-            const path = `PaySlips/${category}/${subfolder}/${file.name}`;
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const base64Content = e.target.result.split(',')[1];
-                    const sha = await getFileSha(path);
-
-                    const bodyData = {
-                        message: commitMessage,
-                        content: base64Content,
-                        branch: CONFIG.branch
-                    };
-                    if (sha) bodyData.sha = sha;
-
-                    log(`Uploading to ${path}...`);
-                    const res = await apiRequest(`contents/${path}`, 'PUT', bodyData);
-
-                    if (res && res.ok) {
-                        log(`Successfully uploaded ${file.name}!`);
-                    } else {
-                        const err = await res.json();
-                        log(`Error uploading: ${err.message}`);
-                    }
-                } catch (error) {
-                    log(`Error: ${error.message}`);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function removeFile() {
-            const category = document.getElementById('deleteCategory').value;
-            const subfolder = document.getElementById('deleteSubfolder').value;
-            const fileName = document.getElementById('deleteFileName').value.trim();
-            const commitMessage = document.getElementById('deleteCommit').value.trim();
-
-            if (!fileName) {
-                alert("Please provide the file name to delete.");
-                return;
-            }
-
-            const path = `PaySlips/${category}/${subfolder}/${fileName}`;
-            const sha = await getFileSha(path);
-            if (!sha) {
-                log(`File not found: ${path}`);
-                return;
-            }
-
-            log(`Deleting ${path}...`);
-            const res = await apiRequest(`contents/${path}`, 'DELETE', {
-                message: commitMessage,
-                sha: sha,
-                branch: CONFIG.branch
-            });
-
-            if (res && res.ok) {
-                log(`Successfully deleted ${path}!`);
-            } else {
-                const err = await res.json();
-                log(`Error deleting: ${err.message}`);
-            }
-        }
-
-        async function shiftFolders() {
-            const category = document.getElementById('shiftCategory').value;
-            const basePath = `PaySlips/${category}`;
-
-            log(`Starting folder shift for ${category}...`);
-
-            const lastPath = `${basePath}/Last`;
-            const lastSecPath = `${basePath}/LastSec`;
-            const lastThiPath = `${basePath}/LastThi`;
-
-            const filesLast = await getFolderFiles(lastPath);
-            const filesLastSec = await getFolderFiles(lastSecPath);
-
-            async function moveFiles(files, targetFolder, actionName) {
-                for (const file of files) {
-                    if (file.type === 'file') {
-                        const fileRes = await fetch(file.download_url);
-                        const blob = await fileRes.blob();
-                        
-                        const reader = new FileReader();
-                        await new Promise((resolve) => {
-                            reader.onload = async function(e) {
-                                const base64Content = e.target.result.split(',')[1];
-                                const targetPath = `${targetFolder}/${file.name}`;
-                                const targetSha = await getFileSha(targetPath);
-
-                                const body = {
-                                    message: `${actionName}: move ${file.name}`,
-                                    content: base64Content,
-                                    branch: CONFIG.branch
-                                };
-                                if (targetSha) body.sha = targetSha;
-
-                                await apiRequest(`contents/${targetPath}`, 'PUT', body);
-                                resolve();
-                            };
-                            reader.readAsDataURL(blob);
-                        });
-                    }
-                }
-            }
-
-            async function clearFolder(files) {
-                for (const file of files) {
-                    if (file.type === 'file') {
-                        const sha = await getFileSha(file.path);
-                        if (sha) {
-                            await apiRequest(`contents/${file.path}`, 'DELETE', {
-                                message: `Clear old file during shift: ${file.name}`,
-                                sha: sha,
-                                branch: CONFIG.branch
-                            });
-                        }
-                    }
-                }
-            }
-
-            if (filesLastSec.length > 0) {
-                log("Moving LastSec files to LastThi...");
-                await moveFiles(filesLastSec, lastThiPath, "Shift LastSec to LastThi");
-                await clearFolder(filesLastSec);
-            }
-
-            if (filesLast.length > 0) {
-                log("Moving Last files to LastSec...");
-                await moveFiles(filesLast, lastSecPath, "Shift Last to LastSec");
-                await clearFolder(filesLast);
-            }
-
-            log("Folder shift completed successfully!");
-        }
-    </script>
+function showTerminalMessage(msg) {
+  document.getElementById("searchSection").style.display = "none";
+  document.getElementById("detailsCard").style.display = "none";
+  document.getElementById("applicationForm").style.display = "none";
+  
+  const target = document.getElementById("terminalStatusBox");
+  target.style.display = "block";
+  target.innerText = msg;
+}
+</script>
 </body>
 </html>
