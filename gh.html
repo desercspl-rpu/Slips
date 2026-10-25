@@ -1,15 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sheet Test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Employee PDF Generator</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+
 body{
-    font-family:Arial;
+    font-family:Arial,sans-serif;
+    margin:0;
     padding:20px;
+    background:#f5f5f5;
+}
+
+.container{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+}
+
+h2{
+    margin-top:0;
+    color:#0078d4;
+}
+
+input{
+    width:300px;
+    padding:10px;
+    margin-bottom:15px;
 }
 
 table{
@@ -17,86 +40,235 @@ table{
     border-collapse:collapse;
 }
 
-th,td{
-    border:1px solid #ddd;
-    padding:8px;
-}
-
 th{
     background:#0078d4;
-    color:#fff;
+    color:white;
 }
-</style>
 
+th,td{
+    padding:10px;
+    border:1px solid #ddd;
+}
+
+button{
+    background:#28a745;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1f7a33;
+}
+
+</style>
 </head>
+
 <body>
+
+<div class="container">
 
 <h2>Employee List</h2>
 
-<div id="output">Loading...</div>
+<input
+type="text"
+id="search"
+placeholder="Search Employee..."
+onkeyup="searchEmployee()">
+
+<div id="result">
+Loading...
+</div>
+
+</div>
 
 <script>
 
 const CSV_URL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vS1PpUAIHpcAxYU0Eq-tXBcz4jxExiO17dyMWNIU1HBFlfCjpSBdDDMnGnVnBi3296QyZKHG1shxtNE/pub?gid=0&single=true&output=csv ";
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vS1PpUAIHpcAxYU0Eq-tXBcz4jxExiO17dyMWNIU1HBFlfCjpSBdDDMnGnVnBi3296QyZKHG1shxtNE/pub?gid=0&single=true&output=csv";
 
-Papa.parse(CSV_URL,{
-    download:true,
-    header:true,
-    skipEmptyLines:true,
+let employees=[];
 
-    complete:function(results){
+loadSheet();
 
-        console.log(results.data);
+function loadSheet(){
 
-        let html = "<table>";
+    Papa.parse(CSV_URL,{
+
+        download:true,
+        header:true,
+        skipEmptyLines:true,
+
+        complete:function(results){
+
+            employees = results.data;
+
+            renderTable();
+
+        }
+
+    });
+
+}
+
+function renderTable(){
+
+    let html=`
+    <table id="empTable">
+
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Branch</th>
+        <th>Designation</th>
+        <th>Mobile</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    `;
+
+    employees.forEach((row,index)=>{
 
         html += `
         <tr>
-            <th>Name</th>
-            <th>Branch</th>
-            <th>Action</th>
+
+        <td>
+        ${row["First Name"] || ""}
+        ${row["Middle Name"] || ""}
+        ${row["Last Name"] || ""}
+        </td>
+
+        <td>${row["Branch"] || ""}</td>
+
+        <td>${row["Designation"] || ""}</td>
+
+        <td>${row["P Mobile Number"] || ""}</td>
+
+        <td>
+        <button onclick="generatePDF(${index})">
+        Generate PDF
+        </button>
+        </td>
+
         </tr>
         `;
+    });
 
-        results.data.forEach((row,index)=>{
+    html += `
+    </tbody>
+    </table>
+    `;
 
-            html += `
-            <tr>
-                <td>
-                    ${row["First Name"] || ""}
-                    ${row["Middle Name"] || ""}
-                    ${row["Last Name"] || ""}
-                </td>
+    document.getElementById("result").innerHTML = html;
 
-                <td>${row["Branch"] || ""}</td>
+}
 
-                <td>
-                    <button onclick="alert('Row : ${index}')">
-                        Generate PDF
-                    </button>
-                </td>
-            </tr>
-            `;
+function searchEmployee(){
 
-        });
+    let value =
+    document.getElementById("search")
+    .value
+    .toLowerCase();
 
-        html += "</table>";
+    const rows =
+    document.querySelectorAll(
+      "#empTable tbody tr"
+    );
 
-        document.getElementById("output").innerHTML = html;
+    rows.forEach(row=>{
 
-    },
+        row.style.display =
+        row.innerText.toLowerCase()
+        .includes(value)
+        ? ""
+        : "none";
 
-    error:function(err){
+    });
 
-        document.getElementById("output").innerHTML =
-        err.message;
+}
 
-        console.error(err);
+async function generatePDF(index){
+
+    const row = employees[index];
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF(
+        "p",
+        "mm",
+        "a4"
+    );
+
+    pdf.setFontSize(18);
+
+    pdf.text(
+      "EMPLOYEE APPLICATION FORM",
+      10,
+      15
+    );
+
+    let y=30;
+
+    function addField(label,value){
+
+        pdf.setFontSize(10);
+
+        pdf.text(
+          label + " : " + (value || ""),
+          10,
+          y
+        );
+
+        y += 6;
 
     }
 
-});
+    addField(
+      "Employee Name",
+      (row["First Name"]||"")
+      +" "+
+      (row["Middle Name"]||"")
+      +" "+
+      (row["Last Name"]||"")
+    );
+
+    addField("Branch",row["Branch"]);
+    addField("Father Name",row["Father Name"]);
+    addField("DOB",row["DOB"]);
+    addField("Age",row["Age"]);
+    addField("Gender",row["Gender"]);
+    addField("UAN",row["UAN"]);
+    addField("ESIC",row["ESIC"]);
+    addField("Marital Status",row["Marital Status"]);
+    addField("Qualification",row["Qualification"]);
+    addField("Blood Group",row["Blood Group"]);
+    addField("Known Language",row["Known Language"]);
+    addField("Experience",row["Experience"]);
+    addField("Designation",row["Designation"]);
+    addField("AO Name",row["AO Name"]);
+    addField("DOJ",row["DOJ"]);
+
+    addField("P Address",row["P Address"]);
+    addField("P Post",row["P Post"]);
+    addField("P Taluka",row["P Taluka"]);
+    addField("P District",row["P District"]);
+    addField("P State",row["P State"]);
+
+    addField("Aadhar",row["A Number"]);
+    addField("PAN",row["PAN"]);
+    addField("Account",row["Account Number"]);
+    addField("IFSC",row["IFSC"]);
+
+    pdf.save(
+      (row["First Name"] || "Employee")
+      + "_Application.pdf"
+    );
+
+}
 
 </script>
 
