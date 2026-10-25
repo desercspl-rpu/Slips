@@ -342,17 +342,21 @@ document.getElementById("employeeModal")
 
 }
 
-function getDriveImage(link){
+async function imageToBase64(url){
 
-    if(!link) return "";
+    const response = await fetch(url);
 
-    const match = link.match(/\/d\/([^\/]+)/);
+    const blob = await response.blob();
 
-    if(!match) return "";
+    return await new Promise(resolve=>{
 
-    const fileId = match[1];
+        const reader = new FileReader();
 
-    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
+        reader.onloadend = () => resolve(reader.result);
+
+        reader.readAsDataURL(blob);
+
+    });
 
 }
 
