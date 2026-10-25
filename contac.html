@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkmate</title>
+    <title>Contact Us</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Inter & FontAwesome Icons -->
@@ -12,6 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="contac.css">
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -43,37 +46,11 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-        .hover-lift {
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08);
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        /*body {
+        /*        -webkit-user-select: none; /* Safari */
+        /*        -ms-user-select: none;     /* Internet Explorer/Edge */
+        /*        user-select: none;        /* Standard syntax */
+        /*    }*/
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-16 md:pb-0 selection:bg-brand-500 selection:text-white">
@@ -145,7 +122,7 @@
                 </a>
 
                 <!-- Location Card Pune -->
-                <a href="https://maps.app.goo.gl/D6Z3B6XY7pduSbyS8" target="_blank" rel="noopener noreferrer" 
+                <a href="https://www.google.com/maps/place/Checkmate+Services+Pvt+Ltd/@18.5662909,73.7735218,19z/data=!4m6!3m5!1s0x3bc2bed0de41b83d:0xcfd5bdb9274c366e!8m2!3d18.5662909!4d73.7735218!16s%2Fg%2F11hyn8lj_f?authuser=0&entry=ttu&g_ep=EgoyMDI2MTAxOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" 
                    onclick="checkLink(event, this.href)"
                    class="searchable-item card-item glass-card p-5 rounded-2xl border border-slate-200/80 shadow-sm hover-lift flex flex-col justify-between group">
                     <div>
@@ -223,7 +200,6 @@
                     </span>
                 </a>
 
-
                 <!-- Email Card -->
                 <a href="mailto:pune.recruitment@checkmateservices.com" 
                    onclick="checkLink(event, this.href)"
@@ -272,10 +248,11 @@
                         { name: "Mr: Babaram Surve", role: "Area Officers - Pune", phone: "+916352936233" },
                         { name: "Mr: Balaji Ghodake", role: "AM - Infosys Pune", phone: "+919922009246" },
                         { name: "Mr: Kaushik Achary", role: "AM - KPIT Pune", phone: "+916359959709" },
-                        { name: "Mr: Manoj Palande", role: "Area Officers - Pune", phone: "+91" },
+                        { name: "Mr: Manoj Palande", role: "Area Officers - Pune", phone: "+917559345218" },
                         { name: "Mr: Ramchandra Painkara", role: "Area Officers - GOA", phone: "+919923588822" },
                         { name: "Mr: Shivling Khabile", role: "Area Officers - Sangli", phone: "+916352405304" },
-                        { name: "Mr: Suresh Math", role: "Area Officers - Solapur", phone: "+919168687288" }
+                        { name: "Mr: Suresh Math", role: "Area Officers - Solapur", phone: "+919168687288" },
+                        { name: "Mr: Sunny Chakranarayan", role: "Area Officers - Pune", phone: "+918149432704" }
                     ];
                     
                     document.write(opsMembers.map(member => {
@@ -357,13 +334,15 @@
                 <p class="text-xs text-slate-500">Drop your query here.</p>
             </div>
             <form onsubmit="handleFormSubmit(event)" class="space-y-4">
-                <div>
+                <div class="relative">
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Your Employee ID:</label>
-                    <input type="text" id="ticketEmpId" required placeholder="e.g. EMP/PUN01234" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="ticketEmpId" oninput="filterEmployeeDropdown(this.value)" autocomplete="off" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <!-- Dropdown suggestions container -->
+                    <div id="empDropdownList" class="hidden absolute left-0 right-0 z-50 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
                 </div>
-				<div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name:</label>
-                    <input type="text" id="ticketEmail" required placeholder="e.g. Rakesh Wankhede" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Your Name:</label>
+                    <input type="text" id="ticketEmail" readonly placeholder="Auto-filled" class="w-full px-3 py-2 text-sm border border-slate-200 bg-slate-100 text-slate-600 w-lg focus:outline-none cursor-not-allowed">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Company Name:</label>
@@ -383,6 +362,19 @@
                     <button type="submit" id="submitBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm">Submit</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Custom Success Popup Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center animate-in fade-in zoom-in duration-200">
+            <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mb-1">
+            Success</h3>
+            <p id="successMessageText" class="text-xs text-slate-500 mb-5">Your request submitted successfully</p>
+            <button onclick="toggleModal('successModal')" class="w-full py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm">OK</button>
         </div>
     </div>
 
@@ -413,128 +405,6 @@
         </div>
     </footer>
 
-    <script>
-        document.getElementById("currentYear").textContent = new Date().getFullYear();
-
-        function toggleHeaderSearch(e) {
-            e.stopPropagation();
-            const searchBox = document.getElementById('headerSearchBox');
-            const searchInput = document.getElementById('searchInput');
-            if (searchBox.classList.contains('hidden')) {
-                searchBox.classList.remove('hidden');
-                searchInput.focus();
-            } else {
-                searchBox.classList.add('hidden');
-            }
-        }
-
-        function closeHeaderSearch() {
-            document.getElementById('headerSearchBox').classList.add('hidden');
-        }
-
-        document.addEventListener('click', function(event) {
-            const wrapper = document.getElementById('headerSearchWrapper');
-            const searchBox = document.getElementById('headerSearchBox');
-            if (wrapper && !wrapper.contains(event.target)) {
-                searchBox.classList.add('hidden');
-            }
-        });
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
-                btn.classList.add('text-slate-600', 'hover:bg-slate-200');
-            });
-            document.getElementById(`content-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-200');
-            activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
-        }
-
-        function filterCards() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const items = document.querySelectorAll('.searchable-item');
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                if (text.includes(query)) {
-                    item.style.display = "";
-                } else {
-                    item.style.display = "none";
-                }
-            });
-        }
-
-        function toggleModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.toggle('hidden');
-            }
-        }
-
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            
-            const errorEl = document.getElementById('formErrorMsg');
-            errorEl.classList.add('hidden');
-            
-            // Capture all form values including Subject and Email
-            const employeeId = document.getElementById('ticketEmpId').value;
-            const company = document.getElementById('ticketCompany').value;
-            const subject = document.getElementById('ticketSubject').value;
-            const email = document.getElementById('ticketEmail').value;
-            const remark = document.getElementById('ticketRemark').value;
-
-            // Your Power Automate URL
-            const powerAutomateUrl = "https://default7055ba6336ec48e083eb932bb1602d.a1.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/28/workflows/20ab591d138948adb435ddb768fd6bad/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=A_lGxRU47nHr3DbFWYyKezULhcWahe-3yBYiamskbIs";
-
-            try {
-                await fetch(powerAutomateUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        employeeId: employeeId,
-                        company: company,
-                        subject: subject,
-                        email: email,
-                        remark: remark,
-                        submittedAt: new Date().toISOString()
-                    })
-                });
-
-                // Simplified alert without page info/link
-                alert("Report successfully sent to control room.");
-                toggleModal('ticketModal');
-                e.target.reset();
-                
-            } catch (err) {
-                console.error(err);
-                errorEl.innerText = "Error: Report submission failed. Please check network and try again.";
-                errorEl.classList.remove('hidden');
-            }
-        }
-
-        function checkLink(event, url) {
-            if (url.includes('index.html') && window.location.protocol === 'file:') {
-                try {
-                    return true;
-                } catch (err) {
-                    event.preventDefault();
-                    showPageError("Error: Page or link not available.");
-                }
-            }
-        }
-
-        function showPageError(message) {
-            const errBox = document.getElementById('pageErrorMsg');
-            if (errBox) {
-                errBox.innerText = message;
-                errBox.classList.remove('hidden');
-            }
-        }
-    </script>
+    <script src="contac.js"></script>
 </body>
 </html>
