@@ -139,7 +139,20 @@ Close
 </div>
 
 <script>
+function getDriveImage(link){
 
+    if(!link) return "";
+
+    const match = link.match(/\/d\/([^\/]+)/);
+
+    if(!match) return "";
+
+    const fileId = match[1];
+
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
+
+}
+    
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8i1kx0NCALI0s9C82TJrGWR_y0q_9czN28swKUuPI0UE8czyH9VTHSA8tfTQKRfIsvmbWW-06eh_p/pub?gid=0&single=true&output=csv";
 
@@ -252,6 +265,51 @@ let html="";
 
 for(const key in currentEmployee){
 
+let value = currentEmployee[key] || "";
+
+const attachmentFields = [
+"Signature",
+"Photo",
+"Front Adhar",
+"Back Adhar",
+"A PAN",
+"Bank Details",
+"PV",
+"A Gun License",
+"Education",
+"Medical Certificate"
+];
+
+if(attachmentFields.includes(key) && value){
+
+html+=`
+<div class="section">
+
+<label>
+<b>${key}</b>
+</label>
+
+<br><br>
+
+<img
+src="${getDriveImage(value)}"
+style="
+max-width:300px;
+border:1px solid #ccc;
+padding:5px;
+display:block;
+margin-bottom:10px;
+">
+
+<input
+id="${key}"
+value="${value}">
+
+</div>
+`;
+
+}else{
+
 html+=`
 <div class="section">
 
@@ -261,13 +319,14 @@ html+=`
 
 <input
 id="${key}"
-value="${currentEmployee[key]||''}">
+value="${value}">
 
 </div>
 `;
 
 }
 
+}
 document.getElementById("employeeForm")
 .innerHTML=html;
 
@@ -280,6 +339,20 @@ function closeModal(){
 
 document.getElementById("employeeModal")
 .style.display="none";
+
+}
+
+function getDriveImage(link){
+
+    if(!link) return "";
+
+    const match = link.match(/\/d\/([^\/]+)/);
+
+    if(!match) return "";
+
+    const fileId = match[1];
+
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
 
 }
 
@@ -300,6 +373,35 @@ y
 );
 
 y+=15;
+
+const photoInput =
+document.getElementById("Photo");
+
+if(photoInput && photoInput.value){
+
+try{
+
+const photoData =
+await imageToBase64(
+getDriveImage(photoInput.value)
+);
+
+pdf.addImage(
+photoData,
+"JPEG",
+150,
+10,
+40,
+50
+);
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
 
 const inputs=
 document.querySelectorAll(
@@ -341,6 +443,62 @@ document.getElementById("Last Name")
 ? document.getElementById("Last Name").value
 : "";
 
+const attachments = [
+
+"Signature",
+"Front Adhar",
+"Back Adhar",
+"A PAN",
+"Bank Details",
+"PV",
+"A Gun License",
+"Education",
+"Medical Certificate"
+
+];
+
+for(const field of attachments){
+
+const element =
+document.getElementById(field);
+
+if(!element || !element.value) continue;
+
+try{
+
+const img =
+await imageToBase64(
+getDriveImage(element.value)
+);
+
+pdf.addPage();
+
+pdf.setFontSize(16);
+
+pdf.text(
+field,
+105,
+10,
+{align:"center"}
+);
+
+pdf.addImage(
+img,
+"JPEG",
+5,
+20,
+200,
+250
+);
+
+}catch(e){
+
+console.log(field);
+
+}
+
+}
+    
 pdf.save(
 `${firstName}_${lastName}.pdf`
 );
