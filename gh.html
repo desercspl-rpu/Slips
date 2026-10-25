@@ -139,7 +139,14 @@ Close
 </div>
 
 <script>
-    
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8i1kx0NCALI0s9C82TJrGWR_y0q_9czN28swKUuPI0UE8czyH9VTHSA8tfTQKRfIsvmbWW-06eh_p/pub?gid=0&single=true&output=csv";
+
+let employees = [];
+let currentEmployee = null;
+
+loadEmployees();
+
 function getDriveImage(link){
 
     if(!link) return "";
@@ -152,345 +159,434 @@ function getDriveImage(link){
 
     return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
 }
-    
-const CSV_URL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8i1kx0NCALI0s9C82TJrGWR_y0q_9czN28swKUuPI0UE8czyH9VTHSA8tfTQKRfIsvmbWW-06eh_p/pub?gid=0&single=true&output=csv"
-
-let employees=[];
-let currentEmployee=null;
-
-loadEmployees();
 
 function loadEmployees(){
 
-Papa.parse(CSV_URL,{
-download:true,
-header:true,
-skipEmptyLines:true,
+    Papa.parse(CSV_URL,{
+        download:true,
+        header:true,
+        skipEmptyLines:true,
 
-complete:function(result){
+        complete:function(result){
 
-employees=result.data;
+            employees = result.data;
+            renderTable();
 
-renderTable();
-
-}
-});
+        }
+    });
 
 }
 
 function renderTable(){
 
-let html=`
-<table id="empTable">
+    let html = `
+    <table id="empTable">
 
-<thead>
-<tr>
-<th>Name</th>
-<th>Branch</th>
-<th>Designation</th>
-<th>Action</th>
-</tr>
-</thead>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Branch</th>
+        <th>Designation</th>
+        <th>Action</th>
+    </tr>
+    </thead>
 
-<tbody>
-`;
+    <tbody>
+    `;
 
-employees.forEach((row,index)=>{
+    employees.forEach((row,index)=>{
 
-html+=`
-<tr>
+        html += `
+        <tr>
 
-<td>
-${row["First Name"]||""}
-${row["Middle Name"]||""}
-${row["Last Name"]||""}
-</td>
+            <td>
+            ${row["First Name"] || ""}
+            ${row["Middle Name"] || ""}
+            ${row["Last Name"] || ""}
+            </td>
 
-<td>${row["Branch"]||""}</td>
+            <td>${row["Branch"] || ""}</td>
 
-<td>${row["Designation"]||""}</td>
+            <td>${row["Designation"] || ""}</td>
 
-<td>
-<button onclick="openEmployee(${index})">
-View
-</button>
-</td>
+            <td>
+                <button onclick="openEmployee(${index})">
+                    View
+                </button>
+            </td>
 
-</tr>
-`;
+        </tr>
+        `;
+    });
 
-});
+    html += `
+    </tbody>
+    </table>
+    `;
 
-html+=`
-</tbody>
-</table>
-`;
-
-document.getElementById("employeeTable").innerHTML=html;
-
+    document.getElementById("employeeTable").innerHTML = html;
 }
 
 function searchEmployee(){
 
-const value=
-document.getElementById("searchBox")
-.value
-.toLowerCase();
+    const value =
+    document.getElementById("searchBox")
+    .value
+    .toLowerCase();
 
-const rows=
-document.querySelectorAll("#empTable tbody tr");
+    const rows =
+    document.querySelectorAll(
+        "#empTable tbody tr"
+    );
 
-rows.forEach(row=>{
+    rows.forEach(row=>{
 
-row.style.display=
-row.innerText.toLowerCase().includes(value)
-? ""
-: "none";
+        row.style.display =
+        row.innerText.toLowerCase().includes(value)
+        ? ""
+        : "none";
 
-});
+    });
 
 }
 
 function openEmployee(index){
 
-currentEmployee=
-JSON.parse(
-JSON.stringify(
-employees[index]
-)
-);
+    currentEmployee =
+    JSON.parse(
+        JSON.stringify(
+            employees[index]
+        )
+    );
 
-let html="";
+    let html = "";
 
-for(const key in currentEmployee){
+    const attachmentFields = [
 
-let value = currentEmployee[key] || "";
+        "Signature",
+        "Photo",
+        "Front Adhar",
+        "Back Adhar",
+        "A PAN",
+        "Bank Details",
+        "PV",
+        "A Gun License",
+        "Education",
+        "Medical Certificate"
 
-const attachmentFields = [
-"Signature",
-"Photo",
-"Front Adhar",
-"Back Adhar",
-"A PAN",
-"Bank Details",
-"PV",
-"A Gun License",
-"Education",
-"Medical Certificate"
-];
+    ];
 
-if(attachmentFields.includes(key) && value){
+    for(const key in currentEmployee){
 
-html+=`
-<div class="section">
+        let value =
+        currentEmployee[key] || "";
 
-<label>
-<b>${key}</b>
-</label>
+        if(
+            attachmentFields.includes(key)
+            &&
+            value
+        ){
 
-<br><br>
+            html += `
+            <div class="section">
 
-<img
-src="${getDriveImage(value)}"
-style="
-max-width:300px;
-border:1px solid #ccc;
-padding:5px;
-display:block;
-margin-bottom:10px;
-">
+                <label>
+                <b>${key}</b>
+                </label>
 
-<input
-id="${key}"
-value="${value}">
+                <br><br>
 
-</div>
-`;
+                <img
+                src="${getDriveImage(value)}"
+                style="
+                max-width:300px;
+                max-height:300px;
+                border:1px solid #ccc;
+                padding:5px;
+                display:block;
+                margin-bottom:10px;
+                object-fit:contain;
+                ">
 
-}else{
+                <input
+                id="${key}"
+                value="${value}">
 
-html+=`
-<div class="section">
+            </div>
+            `;
 
-<label>
-<b>${key}</b>
-</label>
+        }else{
 
-<input
-id="${key}"
-value="${value}">
+            html += `
+            <div class="section">
 
-</div>
-`;
+                <label>
+                <b>${key}</b>
+                </label>
 
-}
+                <input
+                id="${key}"
+                value="${value}">
 
-}
-document.getElementById("employeeForm")
-.innerHTML=html;
+            </div>
+            `;
 
-document.getElementById("employeeModal")
-.style.display="block";
+        }
+
+    }
+
+    document.getElementById(
+        "employeeForm"
+    ).innerHTML = html;
+
+    document.getElementById(
+        "employeeModal"
+    ).style.display = "block";
 
 }
 
 function closeModal(){
 
-document.getElementById("employeeModal")
-.style.display="none";
+    document.getElementById(
+        "employeeModal"
+    ).style.display = "none";
+
+}
+
+async function imageToBase64(url){
+
+    try{
+
+        const response =
+        await fetch(url);
+
+        const blob =
+        await response.blob();
+
+        return await new Promise(resolve=>{
+
+            const reader =
+            new FileReader();
+
+            reader.onloadend =
+            ()=>resolve(reader.result);
+
+            reader.readAsDataURL(blob);
+
+        });
+
+    }catch(error){
+
+        console.log(error);
+
+        return null;
+
+    }
 
 }
 
 async function downloadPDF(){
 
-const { jsPDF }=window.jspdf;
+    const { jsPDF } =
+    window.jspdf;
 
-const pdf=new jsPDF();
+    const pdf =
+    new jsPDF(
+        "p",
+        "mm",
+        "a4"
+    );
 
-let y=15;
+    let y = 15;
 
-pdf.setFontSize(18);
+    pdf.setFontSize(18);
 
-pdf.text(
-"EMPLOYEE APPLICATION",
-10,
-y
-);
+    pdf.text(
+        "EMPLOYEE APPLICATION",
+        10,
+        y
+    );
 
-y+=15;
+    y += 15;
 
-const photoInput =
-document.getElementById("Photo");
+    const attachmentFields = [
 
-if(photoInput && photoInput.value){
+        "Photo",
+        "Signature",
+        "Front Adhar",
+        "Back Adhar",
+        "A PAN",
+        "Bank Details",
+        "PV",
+        "A Gun License",
+        "Education",
+        "Medical Certificate"
 
-try{
+    ];
 
-const photoData =
-await imageToBase64(
-getDriveImage(photoInput.value)
-);
+    // PHOTO ON FIRST PAGE
 
-pdf.addImage(
-photoData,
-"JPEG",
-150,
-10,
-40,
-50
-);
+    const photoInput =
+    document.getElementById("Photo");
 
-}catch(e){
+    if(
+        photoInput &&
+        photoInput.value
+    ){
 
-console.log(e);
+        try{
 
-}
+            const photoData =
+            await imageToBase64(
+                getDriveImage(
+                    photoInput.value
+                )
+            );
 
-}
+            if(photoData){
 
-const inputs=
-document.querySelectorAll(
-"#employeeForm input"
-);
+                pdf.addImage(
+                    photoData,
+                    "JPEG",
+                    155,
+                    10,
+                    35,
+                    45
+                );
 
-inputs.forEach(input=>{
+            }
 
-pdf.setFontSize(10);
+        }catch(e){
 
-const text=
-`${input.id}: ${input.value}`;
+            console.log(e);
 
-if(y>280){
+        }
 
-pdf.addPage();
+    }
 
-y=20;
+    const inputs =
+    document.querySelectorAll(
+        "#employeeForm input"
+    );
 
-}
+    inputs.forEach(input=>{
 
-pdf.text(
-text,
-10,
-y
-);
+        if(
+            attachmentFields.includes(
+                input.id
+            )
+        ){
+            return;
+        }
 
-y+=6;
+        if(y > 270){
 
-});
+            pdf.addPage();
+            y = 20;
 
-const firstName=
-document.getElementById("First Name")
-? document.getElementById("First Name").value
-: "Employee";
+        }
 
-const lastName=
-document.getElementById("Last Name")
-? document.getElementById("Last Name").value
-: "";
+        pdf.setFontSize(10);
 
-const attachments = [
+        pdf.text(
+            `${input.id}: ${input.value}`,
+            10,
+            y
+        );
 
-"Signature",
-"Front Adhar",
-"Back Adhar",
-"A PAN",
-"Bank Details",
-"PV",
-"A Gun License",
-"Education",
-"Medical Certificate"
+        y += 6;
 
-];
+    });
 
-for(const field of attachments){
+    // ATTACHMENT PAGES
 
-const element =
-document.getElementById(field);
+    for(const field of attachmentFields){
 
-if(!element || !element.value) continue;
+        if(field === "Photo")
+            continue;
 
-try{
+        const element =
+        document.getElementById(
+            field
+        );
 
-const img =
-await imageToBase64(
-getDriveImage(element.value)
-);
+        if(
+            !element ||
+            !element.value
+        ){
+            continue;
+        }
 
-pdf.addPage();
+        try{
 
-pdf.setFontSize(16);
+            const imgData =
+            await imageToBase64(
+                getDriveImage(
+                    element.value
+                )
+            );
 
-pdf.text(
-field,
-105,
-10,
-{align:"center"}
-);
+            if(!imgData)
+                continue;
 
-pdf.addImage(
-img,
-"JPEG",
-5,
-20,
-200,
-250
-);
+            pdf.addPage();
 
-}catch(e){
+            pdf.setFontSize(16);
 
-console.log(field);
+            pdf.text(
+                field,
+                105,
+                10,
+                {align:"center"}
+            );
 
-}
+            pdf.addImage(
+                imgData,
+                "JPEG",
+                5,
+                20,
+                200,
+                250
+            );
 
-}
-    
-pdf.save(
-`${firstName}_${lastName}.pdf`
-);
+        }catch(error){
 
-}
+            console.log(
+                field,
+                error
+            );
 
+        }
+
+    }
+
+    const firstName =
+    document.getElementById(
+        "First Name"
+    )
+    ?
+    document.getElementById(
+        "First Name"
+    ).value
+    :
+    "Employee";
+
+    const lastName =
+    document.getElementById(
+        "Last Name"
+    )
+    ?
+    document.getElementById(
+        "Last Name"
+    ).value
+    :
+    "";
+
+    pdf.save(
+        `${firstName}_${lastName}.pdf`
+    );
+
+}    
 </script>
 
 </body>
