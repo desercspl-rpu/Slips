@@ -139,6 +139,7 @@ Close
 </div>
 
 <script>
+    
 function getDriveImage(link){
 
     if(!link) return "";
@@ -150,11 +151,10 @@ function getDriveImage(link){
     const fileId = match[1];
 
     return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
-
 }
     
 const CSV_URL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8i1kx0NCALI0s9C82TJrGWR_y0q_9czN28swKUuPI0UE8czyH9VTHSA8tfTQKRfIsvmbWW-06eh_p/pub?gid=0&single=true&output=csv";
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8i1kx0NCALI0s9C82TJrGWR_y0q_9czN28swKUuPI0UE8czyH9VTHSA8tfTQKRfIsvmbWW-06eh_p/pub?gid=0&single=true&output=csv"
 
 let employees=[];
 let currentEmployee=null;
@@ -339,24 +339,6 @@ function closeModal(){
 
 document.getElementById("employeeModal")
 .style.display="none";
-
-}
-
-async function imageToBase64(url){
-
-    const response = await fetch(url);
-
-    const blob = await response.blob();
-
-    return await new Promise(resolve=>{
-
-        const reader = new FileReader();
-
-        reader.onloadend = () => resolve(reader.result);
-
-        reader.readAsDataURL(blob);
-
-    });
 
 }
 
